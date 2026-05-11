@@ -1,0 +1,97 @@
+<!--show our login form-->
+
+<!doctype html>
+<html>
+<head>
+    <!-- Global Site Tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-107316294-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments)};
+      gtag('js', new Date());
+
+      gtag('config', 'UA-107316294-1');
+    </script>
+    
+    <title>Blaster.World</title>
+    <link href='/client/style.css' rel="stylesheet">
+    <link rel="icon" type="image/png" href="/client/ufo.png" />
+
+    <META NAME="TITLE" CONTENT="Blaster.World">
+    <META NAME="DESCRIPTION" CONTENT="Браузерная онлайн игра про космос. Играй вместе с другими игроками, улучшай корабль, добывай ресурсы, уничтожай вражеские корабли.">
+    <META NAME="KEYWORDS" CONTENT="космос симулятор стрелялка 2D экшн онлайн мультиплеер MMO MMORPG апгрейды стратегия space action game online simulator ММО battle fight fly cosmos stars universe planets звёзды планеты вселенная">
+    <META NAME="OWNER" CONTENT="sgames4444@gmail.com">
+    <META NAME="AUTHOR" CONTENT="SpaceAction">
+    <META HTTP-EQUIV="EXPIRES" CONTENT="Mon, 31 Dec 2004 00:00:01 PST">
+    <META HTTP-EQUIV="CONTENT-LANGUAGE" CONTENT="English">
+    <META NAME="ROBOTS" CONTENT="index,follow">
+    <META NAME="REVISIT-AFTER" CONTENT="2 days">
+    <META HTTP-EQUIV="CHARSET" CONTENT="US-ASCII">
+    <META HTTP-EQUIV="VW96.OBJECT TYPE" CONTENT="World">
+
+    <!-- Google Analytics -->
+    <script>
+    window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+    ga('create', 'UA-107316294-1', 'auto');
+    ga('send', 'pageview');
+    </script>
+    <script async src='https://www.google-analytics.com/analytics.js'></script>
+    <!-- End Google Analytics -->
+</head>
+<body>
+    
+    <div class="container">
+
+        <h1>Login</h1>
+
+        <!-- show any messages that come back with authentication -->
+        <!-- <% if (message.length > 0) { %> -->
+        <div class="flash" id="flash"><!--<%= message %>--></div>
+        <!-- <% } %> -->
+
+        <script>
+            var flash = document.getElementById("flash");
+            function clearFlash() {
+                if(flash)
+                    flash.innerText = '';
+            }
+        </script>
+
+        <!-- LOGIN FORM -->
+        <form action="/login" method="post">
+            <div>
+                <input type="text" onfocus="clearFlash()" placeholder="Email" name="email" required>
+            </div>
+            <div>
+                <input type="password" onfocus="clearFlash()" placeholder="Password" name="password" required>
+            </div>
+
+            <button type="submit" class="btn0">Login</button>
+        </form>
+
+        <hr>
+
+        <p>Play as guest</p>
+
+        <form action="/guest" method="post">
+            <div>
+                <input type="text" placeholder="Nick" name="name">
+            </div>
+
+            <button type="submit" class="btn0">Play</button>
+        </form>
+
+        <p>Need an account? <a href="/signup" class="lnk">Signup</a></p>
+        <p>Or go <a href="/" class="lnk">home</a>.</p>
+
+    </div>
+
+    <script type="text/javascript">
+        
+    if (navigator.userAgent.indexOf("Chrome") == -1) {
+        alert('Please open the game in Chrome for better performance');
+    }
+        
+    </script>
+</body>
+</html>

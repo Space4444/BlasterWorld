@@ -1,0 +1,88 @@
+<!--show our home page with login links-->
+
+<!doctype html>
+<html>
+<head>
+    <!-- Global Site Tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-107316294-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments)};
+      gtag('js', new Date());
+
+      gtag('config', 'UA-107316294-1');
+    </script>
+
+    <title>Blaster.World</title>
+    <link href='/client/style.css' rel="stylesheet">
+    <link rel="icon" type="image/png" href="/client/ufo.png" />
+
+    <meta name="google-signin-client_id" content="134469795946-9ngmscv5989hlg6mdr70j46ifjlo9hrg.apps.googleusercontent.com">
+
+    <META NAME="TITLE" CONTENT="Blaster.World">
+    <META NAME="DESCRIPTION" CONTENT="Браузерная онлайн игра про космос. Играй вместе с другими игроками, улучшай корабль, добывай ресурсы, уничтожай вражеские корабли.">
+    <META NAME="KEYWORDS" CONTENT="космос симулятор стрелялка 2D экшн онлайн мультиплеер MMO MMORPG апгрейды стратегия space action game online simulator ММО battle fight fly cosmos stars universe planets звёзды планеты вселенная">
+    <META NAME="OWNER" CONTENT="sgames4444@gmail.com">
+    <META NAME="AUTHOR" CONTENT="SpaceAction">
+    <META HTTP-EQUIV="EXPIRES" CONTENT="Mon, 31 Dec 2004 00:00:01 PST">
+    <META HTTP-EQUIV="CONTENT-LANGUAGE" CONTENT="English">
+    <META NAME="ROBOTS" CONTENT="index,follow">
+    <META NAME="REVISIT-AFTER" CONTENT="2 days">
+    <META HTTP-EQUIV="CHARSET" CONTENT="US-ASCII">
+    <META HTTP-EQUIV="VW96.OBJECT TYPE" CONTENT="World">
+
+    <!-- Google Analytics -->
+    <script>
+    window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+    ga('create', 'UA-107316294-1', 'auto');
+    ga('send', 'pageview');
+    </script>
+    <script async src='https://www.google-analytics.com/analytics.js'></script>
+    <!-- End Google Analytics -->
+</head>
+<body onload="onLoad();">
+
+<div id="controls">
+<p>⬤ To fly forward press either <b>W</b>, <b>up arrow</b>, or <b>left mouse button</b></p>
+<p>⬤ You can also fly backwards by pressing either <b>S</b>, <b>down arrow</b>, or <b>right mouse button</b></p>
+<p>⬤ To shoot press either <b>SPACEBAR</b>, or <b>middle mouse button</b></p>
+</div>
+
+<script src="https://apis.google.com/js/platform.js" async defer></script>
+<script>
+    function signOut() {
+        var auth2 = gapi.auth2.getAuthInstance();
+        auth2.signOut();
+    }
+
+    function onLoad() {
+      gapi.load('auth2', function() {
+        gapi.auth2.init();
+      });
+    }
+</script>
+
+<div class="container">
+
+    <h1>Blaster.World</h1>
+
+    <p>
+        Welcome, <%=name.split('@')[0]%>!
+    </p>
+
+    <hr>
+
+    <p><a href="/client"><button class="play">Play!</button></a></p>
+    <p><a href="/logout" onclick="signOut();" class="lnk">Logout</button></p>
+
+</div>
+
+<script type="text/javascript">
+        
+if (navigator.userAgent.indexOf("Chrome") == -1) {
+    alert('Please open the game in Chrome for better performance');
+}
+        
+</script>
+</body>
+</html>

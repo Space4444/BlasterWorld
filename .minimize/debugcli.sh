@@ -1,0 +1,44 @@
+#!/bin/bash
+cd scripts/client
+cat CircularJSON.js \
+LZString.js \
+Random.js \
+Ping.js \
+WebRTC.js \
+Camera.js \
+SpaceObject.js \
+ItemGenerator.js \
+Item.js \
+Material.js \
+GameBody.js \
+Universe.js \
+Orb.js \
+SpaceStation.js \
+Star.js \
+Planet.js \
+Bullet.js \
+Explosion.js \
+LBoard.js \
+Minimap.js \
+SpaceShip.js \
+JetSpaceShip.js \
+MyShip.js \
+Asteroid.js \
+equipment/Weapon.js \
+equipment/MovingShotWpn.js \
+equipment/InstantShotWpn.js \
+equipment/Engine.js \
+equipment/Other.js \
+equipment/RepairBot.js \
+Controller.js \
+NPC.js \
+AsteroidController.js \
+Enemy.js \
+Player.js \
+MyPlayer.js \
+Icon.js \
+Interface.js \
+StationInterface.js \
+AnimationFrame.js \
+game.js > ../../public/client/game.min.js
+cd ../..

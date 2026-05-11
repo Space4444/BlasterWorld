@@ -1,0 +1,291 @@
+<html>
+
+    <head>
+        <meta charset="utf-8">
+        <!-- Global Site Tag (gtag.js) - Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-107316294-1"></script>
+        <script>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments)};
+          gtag('js', new Date());
+
+          gtag('config', 'UA-107316294-1');
+        </script>
+    
+        <title>Blaster.World</title>
+        
+        <script src = "https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <script src = "/socket.io/socket.io.js"></script>
+        <!-- <script type = "text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.6.0/pixi.min.js"></script>
+        <script type = "text/javascript" src="client/pixi-particles.js"></script> -->
+        <script type = "text/javascript" src="client/pixi_4_6_1.js"></script>
+        <script type = "text/javascript" src="client/pixi-particles.js"></script>
+        <script type = "text/javascript" src="client/pixi-picture.js"></script>
+        <script type = "text/javascript" src="client/pixi-projection.js"></script>
+        <script type = "text/javascript">!function(){function e(t,o){return n?void(n.transaction("s").objectStore("s").get(t).onsuccess=function(e){var t=e.target.result&&e.target.result.v||null;o(t)}):void setTimeout(function(){e(t,o)},100)}var t=window.indexedDB||window.mozIndexedDB||window.webkitIndexedDB||window.msIndexedDB;if(!t)return void console.error("indexDB not supported");var n,o={k:"",v:""},r=t.open("d2",1);r.onsuccess=function(e){n=this.result},r.onerror=function(e){console.error("indexedDB request error"),console.log(e)},r.onupgradeneeded=function(e){n=null;var t=e.target.result.createObjectStore("s",{keyPath:"k"});t.transaction.oncomplete=function(e){n=e.target.db}},window.ldb={get:e,set:function(e,t){o.k=e,o.v=t,n.transaction("s","readwrite").objectStore("s").put(o)}}}();
+        </script>
+        
+        <link href='/client/style.css' rel="stylesheet">
+        
+        <link rel="icon" type="image/png" href="/client/ufo.png" />
+
+        <META NAME="TITLE" CONTENT="Blaster.World">
+        <META NAME="DESCRIPTION" CONTENT="Multiplayer space action game! Explore the Universe, fight enemies and craft new items!">
+        <META NAME="KEYWORDS" CONTENT="космос, симулятор, стрелялка, 2D, экшн, онлайн, мультиплеер, MMO, MMORPG, апгрейды, стратегия, space, action, game, online, simulator, ММО, battle, fight, fly, cosmos, stars, universe, planets, звёзды, планеты, вселенная">
+        <META NAME="OWNER" CONTENT="sgames4444@gmail.com">
+        <META NAME="AUTHOR" CONTENT="SpaceAction">
+        <META HTTP-EQUIV="EXPIRES" CONTENT="Mon, 31 Dec 2004 00:00:01 PST">
+        <META HTTP-EQUIV="CONTENT-LANGUAGE" CONTENT="English">
+        <META NAME="ROBOTS" CONTENT="index,follow">
+        <META NAME="REVISIT-AFTER" CONTENT="2 days">
+        <META HTTP-EQUIV="CHARSET" CONTENT="US-ASCII">
+        <META HTTP-EQUIV="VW96.OBJECT TYPE" CONTENT="World">
+
+        <!-- Google Analytics -->
+        <script>
+        window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+        ga('create', 'UA-107316294-1', 'auto');
+        ga('send', 'pageview');
+        </script>
+        <script async src='https://www.google-analytics.com/analytics.js'></script>
+        <!-- End Google Analytics -->
+    </head>
+        
+    <body onresize = "onResize()">
+        <!-- <% if (auth) { %> -->
+            <!-- <div id="data" style = "display: none;"> -->
+                <!-- {"user":{
+                    "u_id":"<%=user.u_id%>",
+                    "email":"<%=user.email%>",
+                    "password":"<%=user.password%>"
+                }} -->
+            <!-- </div> -->
+        <!-- <% } else {%> -->
+            <div id="data" style = "display: none;">
+                {"name":"guest"}
+                <!-- {"name":"<%=name%>"} -->
+            </div>
+        <!-- <% } %> -->
+
+        <div id="loading">
+            <div id="load-bar">
+                <h1><i>Loading...</i></h1>
+                <progress id="loadBar" value="0"></progress>
+            </div>
+        </div>
+
+        <div id = "space-div">
+            <canvas id = "map" width="180" height="180"></canvas>
+            
+            <div id = "l-board">
+                <h2>players</h2>
+                <hr>
+                <div id = "l-list"></div>
+            </div>
+            
+            <div id = "chat">
+                <div id = "chat-text" class = "chatText"></div>
+
+                <form id = "chat-form" novalidate>
+                    <input id = "chat-input" class = "chat" autocomplete = "off" type = "text"></input>
+                
+                    <button id = "send-button" class = "chat game-button">Send</button>
+                    
+                    <button id = "slide-button" class = "chat game-button" type="button">⇅</button>
+                </form>
+            </div>
+        </div>
+
+        <div id = "landed-div" style = "display: none">
+            <div id = "alert"></div>
+            <div class = "top">
+                <div id = "money"></div>
+                <b>Space Station</b>
+            </div>
+
+            <div class = "flex">
+                <div class = "selected tab" id = "buyTab">BUY</div>
+                <div class = "unselected tab" id = "sellTab">SELL</div>
+                <div class = "unselected tab" id = "craftTab">CRAFT</div>
+                <div class = "unselected tab" id = "equipmentTab">EQUIPMENT</div>
+            </div>
+
+            <div class = "interface" id = "buyDiv"><p>Space ships:</p></div>
+
+            <div class = "interface" id = "sellDiv" style = "display: none">
+                <div id = "sell-bottom">
+                    <button id = "sellButton" class = "game-button" disabled>Sell</button>
+                </div>
+            </div>
+            
+            <div class = "interface" id = "craftDiv" style = "display: none">
+                <div id = "crafting">
+                    <table>
+                        <tr><td><div class = "cell"></div></td><td><div class = "cell"></div></td><td><div class = "cell"></div></td></tr>
+                        <tr><td><div class = "cell"></div></td><td><div class = "cell"></div></td><td><div class = "cell"></div></td></tr>
+                        <tr><td><div class = "cell"></div></td><td><div class = "cell"></div></td><td><div class = "cell"></div></td></tr>
+                    </table>
+
+                    <button id = "convert" class = "game-button">⇩</button>
+                    
+                    <div id = "result" class = "cell"></div>
+                </div>
+            </div>
+
+            <div class = "interface" id = "equipmentDiv" style = "display: none">
+                <div id = "equipment" class = "inventory">
+                    <div id = "ship-img"></div>
+                    
+                    <div id = "weapons" class = "equipment">
+                        <!-- <div class = "label">weapons</div> -->
+                    </div>
+
+                    <div id = "engines" class = "equipment">
+                        <!-- <div class = "label">engines</div> -->
+                    </div>
+
+                    <div id = "other" class = "equipment">
+                        <!-- <div class = "label">additional equipment</div> -->
+                    </div>
+                </div>
+
+                <div id = "inventory" class = "inventory"></div>
+            </div>
+            
+            <div class = bottom>
+                <button id = "take-off" class = "game-button">Take off</button>
+            </div>
+
+            <div id = "hand" class = "cell"></div>
+        </div>
+        
+        <div id = "respawn-div" style = "display:none" align="center">
+            <h1>Your ship was destroyed...</h1>
+            <button id ="respawn-button" class = "game-button">respawn</button>
+        </div>
+
+        <script type="text/javascript">
+            $("#slide-button").click(function() {
+              $("#chat-text").slideToggle();
+            });
+
+            window.oncontextmenu = function() {
+              return false;
+            }
+        </script>
+
+        <script id="planetShader" type="shader">
+            
+            precision mediump float;
+
+            varying vec2 vTextureCoord;//The coordinates of the current pixel
+            uniform sampler2D uSampler;//The image data
+            uniform sampler2D texture, LightMap, ShadowMap;
+            uniform vec2 fi;
+            uniform float atmosphere, angle;
+
+            void main(void) {
+                vec2 uv = vTextureCoord - 0.5;
+                float c = sqrt(dot(uv, uv));
+                float angle1 = asin(min(2.2 * c, 1.0));
+                float angle2 = atan(uv.y, uv.x);
+                vec2 result = angle1 / 3.14159265358979 * vec2(cos(angle2), sin(angle2)) + 0.5;
+                result = vec2(mod((result.x + fi.x), 2.0) * 0.5, mod((result.y + fi.y), 1.0));
+                angle2 -= angle;
+                vec2 uv1 = vec2(cos(angle2), sin(angle2)) * c + 0.5;
+                vec4 r = (texture2D(texture, result) - 2.25 * vec4(texture2D(ShadowMap, uv1).rgb, 0.0));
+                vec4 t = vec4(texture2D(texture, vec2(2.0, 2.0)).rgb, texture2D(LightMap, uv1).r);
+                vec4 c1 = r * float(c < 0.454545454545) + t * atmosphere;
+
+                vec4 c2 = texture2D(uSampler, vTextureCoord);
+                gl_FragColor = vec4(c1.rgb * c2.a * c1.a, c1.a * c2.a);
+            }
+
+        </script>
+
+        <script id="starShader" type="shader">
+            
+            precision mediump float;
+
+            varying vec2 vTextureCoord;//The coordinates of the current pixel
+            uniform sampler2D uSampler;//The image data
+            uniform sampler2D texture;
+
+            void main(void) {
+                vec2 uv = vTextureCoord - 0.5;
+                float c = sqrt(dot(uv, uv));
+                float angle1 = asin(min(2.4 * c, 1.0));
+                float angle2 = atan(uv.y, uv.x);
+                vec2 result = angle1 / 3.14159265358979 * vec2(cos(angle2), sin(angle2)) + 0.5;
+                float tmp = (0.08333333333333 - max(0.0, c - 0.41666666666666)) * 12.0;
+                vec4 c1 = vec4(texture2D(texture, result).rgb, tmp * tmp);
+
+                vec4 c2 = texture2D(uSampler, vTextureCoord);
+                gl_FragColor = vec4(c1.rgb * c2.a * c1.a, c1.a * c2.a);
+            }
+
+        </script>
+
+        <script id="stationShader" type="shader">
+            
+            precision mediump float;
+
+            varying vec2 vTextureCoord;//The coordinates of the current pixel
+            uniform sampler2D uSampler;//The image data
+            uniform float over;
+            
+            void main(void) {
+                vec4 c = texture2D(uSampler, vTextureCoord);
+                float a = c.a;
+                vec3 col = vec3(0.0, 0.0, 1.0 - sqrt(c.b));
+                gl_FragColor = vec4((col + over * 0.2) * a, a);
+            }
+
+        </script>
+
+        <script id="backgroundShader" type="shader">
+            
+            precision mediump float;
+
+            varying vec2 vTextureCoord;//The coordinates of the current pixel
+            uniform sampler2D uSampler;//The image data
+            uniform vec2 pos, size;
+            
+            void main(void) {
+                vec2 coord = vTextureCoord - pos / size;
+                coord = coord - floor(coord);
+                gl_FragColor = texture2D(uSampler, coord);
+            }
+
+        </script>
+
+        <script id="foregroundShader" type="shader">
+            
+            precision mediump float;
+
+            varying vec2 vTextureCoord;//The coordinates of the current pixel
+            uniform sampler2D uSampler;//The image data
+            uniform vec2 pos, size;
+            
+            void main(void) {
+                vec2 coord = vTextureCoord - pos / size;
+                coord = coord - floor(coord);
+                vec4 c = texture2D(uSampler, coord);
+                gl_FragColor = vec4(c.rgb, c.r);
+            }
+
+        </script>
+
+        <script type="text/javascript">
+        
+        if (navigator.userAgent.indexOf("Chrome") == -1) {
+            alert('Please open the game in Google Chrome for better performance');
+        }
+        
+        </script>
+
+        <script src = "/client/game.min.js"></script>
+
+    </body>
+
+</html>

@@ -1,0 +1,239 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+</head>
+
+<body>
+    <div class="grid">
+        <h1 id="heading">Calls DataChannel Test</h1>
+        <p>This example establishes two datachannels: one publishes data and the other one subscribes, the test measures how fast a message travels to and from the server.</p>
+        <div>
+            <button id="dc-start" style="display: none">Start test</button>
+            <p id="dc-stats">&nbsp;</p>
+        </div>
+    </div>
+    <script type="module">
+        // This is the App ID from the dashboard that identifies this Calls Application.
+        // https://dash.cloudflare.com/?to=/:account/calls
+        // Note: Calls sessions are limited to interacting with sessions in the same App ID.
+        const APP_ID = "f45e4c5f3d29e26de4cdbdda7931f10e";
+        // ❗❗❗ DO NOT USE YOUR TOKEN IN THE BROWSER FOR PRODUCTION. It should be kept and used server-side.
+        const APP_TOKEN = "f746d8f2fff3b6dffc4dc4f47b6bd0a8e08255f67149401dba529d27b8d9ec5b";
+        // We'll use this for authentication when making requests to the Calls API.
+        const headers = {
+            Authorization: `Bearer ${APP_TOKEN}`,
+        };
+        const EXTRA_QUERYPARAMS = ""
+        const API_BASE = `https://rtc.live.cloudflare.com/v1/apps/${APP_ID}`;
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const createOffer = !!urlParams.get('createOffer');
+
+        const echoMagic = crypto.randomUUID()
+        const dcStartButton = document.getElementById("dc-start")
+        const dcStats = document.getElementById("dc-stats")
+
+        const dcSamples = []
+
+        const session1 = { id: await createCallsSession(), peerConnection: await createPeerConnection() }
+        await establishDataChannelTransport(session1, createOffer)
+        session1.peerConnection.ondatachannel = (ev) => {
+            const dc = ev.channel
+            dc.onmessage = (m) => console.log(m)
+        }
+
+        const session2 = { id: await createCallsSession(), peerConnection: await createPeerConnection() }
+        await establishDataChannelTransport(session2, createOffer)
+
+        const channel1resp = await fetch(
+            `${API_BASE}/sessions/${session1.id}/datachannels/new${EXTRA_QUERYPARAMS}`,
+            {
+                method: "POST",
+                headers,
+                body: JSON.stringify({
+                    dataChannels: [
+                        {
+                            location: "local",
+                            dataChannelName: "channel-one",
+                        },
+                    ],
+                }),
+            }
+        ).then((res) => res.json());
+
+        const channel1 = session1.peerConnection.createDataChannel(
+            "channel-one",
+            {
+                negotiated: true,
+                id: channel1resp.dataChannels[0].id,
+            }
+        );
+
+        const channel1SubscribeResp = await fetch(
+            `${API_BASE}/sessions/${session2.id}/datachannels/new${EXTRA_QUERYPARAMS}`,
+            {
+                method: "POST",
+                headers,
+                body: JSON.stringify({
+                    dataChannels: [
+                        {
+                            location: "remote",
+                            sessionId: session1.id,
+                            dataChannelName: "channel-one",
+                        },
+                    ],
+                }),
+            }
+        ).then((res) => res.json());
+
+        const channel1Subscribed =
+            session2.peerConnection.createDataChannel(
+                "channel-one-subscribed",
+                {
+                    negotiated: true,
+                    id: channel1SubscribeResp.dataChannels[0].id,
+                }
+            );
+
+        dcStartButton.style.display = "block"
+
+        channel1Subscribed.addEventListener('message', (evt) => {
+            const received = evt.data
+            const receivedTs = evt.timeStamp
+            const sendTs = parseFloat(received)
+            dcSamples.push(receivedTs - sendTs)
+            updateStats(dcSamples, dcStats)
+        })
+
+        let dcInterval
+        dcStartButton.addEventListener('click', () => {
+            if (dcStartButton.textContent.startsWith('Start')) {
+                dcSamples.length = 0;
+                dcInterval = runDc()
+                dcStartButton.textContent = dcStartButton.textContent.replace('Start', 'Stop')
+            } else {
+                clearInterval(dcInterval)
+                dcStartButton.textContent = dcStartButton.textContent.replace('Stop', 'Start')
+            }
+        })
+
+
+        function runDc() {
+            return setInterval(() => {
+                channel1.send(performance.now())
+            }, 500)
+        }
+
+        function stdev(arr) {
+            let mean = arr.reduce((acc, curr) => {
+                return acc + curr
+            }, 0) / arr.length;
+            arr = arr.map((k) => {
+                return (k - mean) ** 2
+            });
+            let sum = arr.reduce((acc, curr) => acc + curr, 0);
+            let variance = sum / arr.length
+            return Math.sqrt(variance)
+        }
+
+        function updateStats(samples, elem) {
+            const min = Math.min.apply(null, samples)
+            const max = Math.max.apply(null, samples)
+            const avg = samples.reduce((a, b) => a + b) / samples.length
+            const std = stdev(samples)
+            elem.textContent = `Samples: ${samples.length}; Min: ${min.toFixed(2)}; Max: ${max.toFixed(2)}; Stdev: ${std.toFixed(2)}; Average: ${avg.toFixed(2)}`
+        }
+
+        async function createCallsSession() {
+            const sessionResponse = await fetch(
+                `${API_BASE}/sessions/new${EXTRA_QUERYPARAMS}`,
+                {
+                    method: "POST",
+                    headers,
+                },
+            ).then((res) => res.json());
+
+            return sessionResponse.sessionId;
+        }
+
+        /**
+         * Creates a peer connection with some default settings
+         */
+        async function createPeerConnection() {
+            const peerConnection = new RTCPeerConnection({
+                iceServers: [
+                    {
+                        urls: "stun:stun.cloudflare.com:3478",
+                    },
+                ],
+                bundlePolicy: "max-bundle",
+            });
+
+            return peerConnection;
+        }
+
+        async function establishDataChannelTransport(session, makeOffer) {
+            let sdp = null
+            if (makeOffer) {
+                const dc = await session.peerConnection.createDataChannel("server-events", { negotiated: false })
+                dc.onmessage = (m) => console.log(m)
+                sdp = await session.peerConnection.createOffer()
+                await session.peerConnection.setLocalDescription(sdp)
+            }
+            const response = await fetch(
+                `${API_BASE}/sessions/${session.id}/datachannels/establish${EXTRA_QUERYPARAMS}`,
+                {
+                    method: "POST",
+                    headers,
+                    body: JSON.stringify({
+                        dataChannel: {
+                            location: "remote",
+                            dataChannelName: "server-events",
+                        },
+                        ...(sdp != null ? {
+                            sessionDescription: { type: 'offer', sdp: sdp.sdp }
+                        } : {})
+                    }),
+                },
+            ).then((res) => res.json());
+            if (response.requiresImmediateRenegotiation) {
+                // We got a session description from the remote in the response,
+                // we need to set it as the remote description
+                await session.peerConnection.setRemoteDescription(
+                    response.sessionDescription,
+                );
+                // Create an answer
+                const localAnswer = await session.peerConnection.createAnswer();
+                // And set it as local description
+                await session.peerConnection.setLocalDescription(localAnswer);
+                // Send our answer back to the Calls API
+                const renegotiateResponse = await fetch(
+                    `${API_BASE}/sessions/${session.id}/renegotiate${EXTRA_QUERYPARAMS}`,
+                    {
+                        method: "PUT",
+                        headers,
+                        body: JSON.stringify({
+                            sessionDescription: {
+                                sdp: localAnswer.sdp,
+                                type: "answer",
+                            },
+                        }),
+                    },
+                ).then((res) => res.json());
+                if (renegotiateResponse.errorCode) {
+                    throw new Error(renegotiateResponse.errorDescription);
+                }
+            } else {
+                await session.peerConnection.setRemoteDescription(
+                    response.sessionDescription,
+                );
+            }
+        }
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,40 @@
+{
+    "__config__": {
+        "name": "kenney",
+        "resources": [
+            "./kenney-atlas.json",
+            "../fonts/desyrel.fnt",
+            "../fonts/Skranji-Bold-40.fnt"
+        ]
+    },
+    "default": {
+        "bg": "wnd-grey-bg.png",
+        "padding" : 2,
+        "bgPadding": 6,
+        "corner": "wnd-grey-corner.png",
+        "line": "wnd-grey-line.png",
+        "font": {
+            "size": "20px",
+            "family": "Arial",
+            "color": "black"
+        }
+    },
+    "Window": {
+        "bgPadding": 5,
+        "bg": "wnd-grey-bg.png",
+        "corner": "wnd-grey-corner.png",
+        "line": "wnd-grey-line.png"
+    }, 
+     "Button": {
+        "bgPadding": 6,
+        "bg": "btn-grey-bg.png",
+        "corner": "btn-grey-corner.png",
+        "line": "btn-grey-line-t.png"
+    },
+    "bluebutton": {
+        "bgPadding": 6,
+        "bg": "btn-blue-bg.png",
+        "corner": "btn-blue-corner.png" ,
+        "line": "btn-blue-line.png" 
+    }
+}

@@ -1,0 +1,120 @@
+<!--show our signup form-->
+
+<!doctype html>
+<html>
+<head>
+    <!-- Global Site Tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-107316294-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments)};
+      gtag('js', new Date());
+
+      gtag('config', 'UA-107316294-1');
+    </script>
+
+    <title>Blaster.World</title>
+    <link href='/client/style.css' rel="stylesheet">
+    <link rel="icon" type="image/png" href="/client/ufo.png" />
+
+    <META NAME="TITLE" CONTENT="Blaster.World">
+    <META NAME="DESCRIPTION" CONTENT="Браузерная онлайн игра про космос. Играй вместе с другими игроками, улучшай корабль, добывай ресурсы, уничтожай вражеские корабли.">
+    <META NAME="KEYWORDS" CONTENT="космос симулятор стрелялка 2D экшн онлайн мультиплеер MMO MMORPG апгрейды стратегия space action game online simulator ММО battle fight fly cosmos stars universe planets звёзды планеты вселенная">
+    <META NAME="OWNER" CONTENT="sgames4444@gmail.com">
+    <META NAME="AUTHOR" CONTENT="SpaceAction">
+    <META HTTP-EQUIV="EXPIRES" CONTENT="Mon, 31 Dec 2004 00:00:01 PST">
+    <META HTTP-EQUIV="CONTENT-LANGUAGE" CONTENT="English">
+    <META NAME="ROBOTS" CONTENT="index,follow">
+    <META NAME="REVISIT-AFTER" CONTENT="2 days">
+    <META HTTP-EQUIV="CHARSET" CONTENT="US-ASCII">
+    <META HTTP-EQUIV="VW96.OBJECT TYPE" CONTENT="World">
+
+    <!-- Google Analytics -->
+    <script>
+    window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+    ga('create', 'UA-107316294-1', 'auto');
+    ga('send', 'pageview');
+    </script>
+    <script async src='https://www.google-analytics.com/analytics.js'></script>
+    <!-- End Google Analytics -->
+</head>
+<body>
+    <script>
+        function validatePassword() {
+            const password = document.getElementById("password");
+            const confirmPassword = document.getElementById("confirm_password");
+            if(password.value != confirmPassword.value) {
+                alert("Passwords don't match");
+                return false;
+            } else
+                return true;
+        }
+        function validateForm() {
+            const reg = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
+
+            if (!reg.test(document.getElementById('email').value)) 
+            {
+                alert('Invalid Email Address');
+                return false;
+            }
+            return validatePassword();
+        }
+    </script>
+    <div class="container">
+
+        <h1>Signup</h1>
+
+        <!-- show any messages that come back with authentication -->
+        <!-- <% if (message.length > 0) { %> -->
+        <div class="flash" id="flash"><!--<%= message %>--></div>
+        <!-- <% } %> -->
+
+        <script>
+            const flash = document.getElementById("flash");
+            function clearFlash() {
+                if(flash)
+                    flash.innerText = '';
+            }
+        </script>
+
+        <!-- LOGIN FORM -->
+        <form action="/signup" method="post" onsubmit="return validateForm()" id="form">
+            <div>
+                <input type="text" onfocus="clearFlash()" id="email" placeholder="Email" name="email" required>
+            </div>
+            <div>
+                <input type="password" onfocus="clearFlash()" id="password" placeholder="Password" name="password" required>
+            </div>
+            <div>
+                <input type="password" onfocus="clearFlash()" id="confirm_password" placeholder="Confirm password" required>
+            </div>
+
+            <button type="submit" class="btn0">Signup</button>
+        </form>
+
+        <hr>
+
+        <p>Play as guest</p>
+
+        <form action="/guest" method="post">
+            <div>
+                <input type="text" placeholder="Nick" name="name">
+            </div>
+
+            <button type="submit" class="btn0">Play</button>
+        </form>
+
+        <p>Already have an account? <a href="/login" class="lnk">Login</a></p>
+        <p>Or go <a href="/" class="lnk">home</a>.</p>
+
+        <script type="text/javascript">
+        
+        if (navigator.userAgent.indexOf("Chrome") == -1) {
+            alert('Please open the game in Chrome for better performance');
+        }
+        
+        </script>
+
+    </div>
+</body>
+</html>
