@@ -9,9 +9,9 @@ function App() {
 	return (
         <BrowserRouter>
             <Routes>
-                <Route path='/f' element={<Guest/>} />
-                <Route path='guestt_' element={<Guest/>} />
-                <Route path='*' element={<NotFound/>} />
+                <Route path='client' element={<Guest/>} />
+                {/* <Route path='guest' element={<Guest/>} /> */}
+                <Route path='guest' element={<NotFound/>} />
             </Routes>
         </BrowserRouter>
 	);
