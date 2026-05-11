@@ -1,5 +1,51 @@
+import planetShader from './shaders/planetShader.txt';
+import starShader from './shaders/starShader.txt';
+import stationShader from './shaders/stationShader.txt';
+import backgroundShader from './shaders/backgroundShader.txt';
+import foregroundShader from './shaders/foregroundShader.txt';
+import { useEffect } from 'react';
+
+
 export default function Guest() {
-    return (<>
+    async function addShader(src, id) {
+        const script = document.createElement('script');
+        script.type = 'shader';
+        script.id = id;
+        script.text = await (await fetch(src) ).text();
+        document.body.appendChild(script);
+    }
+    
+    function addScript(src) {
+        const script = document.createElement("script");
+        script.src = src;
+        script.async = false;
+        document.head.appendChild(script);
+    }
+    
+    function handleClick() {
+        $("#chat-text").slideToggle();
+    }
+
+    useEffect(() => {
+        async function addScripts() {
+            await addShader(planetShader, 'planetShader');
+            await addShader(starShader, 'starShader');
+            await addShader(stationShader, 'stationShader');
+            await addShader(backgroundShader, 'backgroundShader');
+            await addShader(foregroundShader, 'foregroundShader');
+            addScript("https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js");
+            addScript("socket.io/socket.io.js");
+            addScript("client/pixi_4_6_1.js");
+            addScript("client/pixi-particles.js");
+            addScript("client/pixi-picture.js");
+            addScript("client/pixi-projection.js");
+            addScript("client/indexed_db.js");
+            addScript("client/game.min.js");
+        }
+        addScripts();
+    }, []);
+
+    return (<div onContextMenu={(e) => e.preventDefault()}>
         {/* <% if (auth) { %>
             <div id="data" style = "display: none;">
                 {"user":{
@@ -39,7 +85,7 @@ export default function Guest() {
                 
                     <button id = "send-button" className = "chat game-button">Send</button>
                     
-                    <button id = "slide-button" className = "chat game-button" type="button">⇅</button>
+                    <button id = "slide-button" className = "chat game-button" type="button" onClick={handleClick}>⇅</button>
                 </form>
             </div>
         </div>
@@ -105,6 +151,10 @@ export default function Guest() {
 
             <div id = "hand" className = "cell"></div>
         </div>
-        <script src = "/client/game.min.js" async={true} />
-    </>);
+        
+        <div id = "respawn-div" style = {{display: 'none'}} align="center">
+            <h1>Your ship was destroyed...</h1>
+            <button id ="respawn-button" className = "game-button">respawn</button>
+        </div>
+    </div>);
 };

@@ -1,0 +1,11 @@
+precision mediump float;
+
+varying vec2 vTextureCoord;//The coordinates of the current pixel
+uniform sampler2D uSampler;//The image data
+uniform vec2 pos, size;
+
+void main(void) {
+    vec2 coord = vTextureCoord - pos / size;
+    coord = coord - floor(coord);
+    gl_FragColor = texture2D(uSampler, coord);
+}

@@ -1,0 +1,590 @@
+html
+{
+	cursor: default;
+	user-select: none;
+	overflow: hidden;
+	transition: none;
+	background-color: black;
+	margin: -8px;
+	font-family: arial;
+}
+body
+{	
+	background-image: inherit;
+}
+.upgrades
+{
+	padding-left: 5px;
+	min-width: 100;
+	text-align: left;
+}
+.cost
+{
+	min-width: 50;
+}
+.up
+{
+	width: 25;
+}
+.title
+{
+	background-color: rgba(255, 128, 0, 0.5);
+}
+#sign-div
+{
+	color: white;
+	position: relative;
+	top: 250;
+}
+#respawn-div
+{
+	color: rgba(200, 32, 16, 1);;
+	position: absolute;
+	top: 0px;
+	left: 50%;
+	z-index: 2;
+	transform: translate(-50%, 0);
+}
+#respawn-button
+{
+	font-size: 32px;
+	min-width: 150px;
+	min-height: 55px;
+	border-radius: 10px;
+}
+.game-button
+{
+	color: #CCEEFF;
+	background-color: rgba(0, 32, 64, 0.75);
+}
+.game-button:hover
+{
+	color: #FFFFFF;
+	background-color: #003F7F;
+}
+.chat
+{
+	border-radius: 3px;
+	border-color: #7F7FFF;
+	background-color: rgba(0, 32, 64, 0.75);
+	color: #CCEEFF;
+}
+.chatText
+{
+	color: #7FBFFF;
+}
+#chat
+{
+	position: absolute;
+	bottom: 0px;
+	right: -17px;
+	left: 8px;
+	z-index: 2;
+}
+#chat-text
+{
+	color: white;
+	height: 108;
+	overflow-y: scroll;
+}
+#chat-input
+{
+	width: 37%;
+	min-width: 200;
+	max-width: 400;
+}
+#map
+{
+	position: absolute;
+	right: 15px;
+	bottom: 15px;
+	border: 2px solid #7F9FFF;
+	background-color: rgba(0, 32, 64, 0.5);
+	z-index: 2;
+}
+#l-board
+{
+	overflow-y: hidden;
+	width: 175px;
+	max-height: 271px;
+	position: absolute;
+	top: 15px;
+	right: 15px;
+	text-align: center;
+	padding: 5px;
+	line-height: 20px;
+	background-color: rgba(0, 32, 64, 0.5);
+	z-index: 2;
+	border-radius: 5px;
+	text-shadow: 0px 0px 8px #0000FF;
+	color: #BBDDFF;
+}
+hr
+{
+	color: #7F7FFF;
+	background-color: #7F7FFF;
+	border-color: #7F7FFF;
+}
+
+/*=======================================================================================*/
+/* SIGN UP, SIGN IN AND PROFILE */
+/*=======================================================================================*/
+.container
+{
+	border-radius: 10px;
+	min-width: 32%;
+	min-height: 32%;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	text-align: center;
+	background-color: #111121;
+	color: #FF7F00;
+}
+.container input
+{
+	background-color: #ffffff;
+	border-radius: 4px;
+}
+.btn0
+{
+	border-radius: 4px;
+	color: #000000;
+	background-color: #00AA00;
+	height: 25px;
+}
+.btn0:hover
+{
+	background-color: #3e8e41;
+	cursor: pointer;
+}
+.btn
+{
+	border-radius: 4px;
+	color: #000020;
+	background-color: #66BBff;
+	text-decoration: none;
+	height: 22px;
+}
+.btn:hover
+{
+	background-color: #3377CC;
+}
+.flash
+{
+	color: red;
+}
+.play
+{
+	border-radius: 5px;
+	color: #000000;
+	background-color: #00AA00;
+	min-width: 100px;
+	min-height: 33px;
+	font-size: 25px;
+}
+.play:hover
+{
+	background-color: #3e8e41;
+	cursor: pointer;
+}
+.lnk:hover
+{
+	color: #AA5f00;
+}
+.g-signin2{
+	width: 100%;
+}
+
+.g-signin2 > div
+{
+	margin: 0 auto;
+}
+a
+{
+	color: yellow;
+}
+
+.note
+{
+	position: absolute;
+	bottom: 0px;
+	right: 0px;
+	content: url(/client/note.png);
+	z-index: 3;
+}
+
+/*=======================================================================================*/
+/* LANDED INTERFACE */
+/*=======================================================================================*/
+#landed-div
+{
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	width: 100%;
+	height: 100%;
+	background-color: #000F1F;
+	text-shadow: 0px 0px 8px #0000FF;
+	color: #BBDDFF;
+}
+#take-off
+{
+	font-size: 32px;
+	min-width: 150px;
+	min-height: 55px;
+	border-radius: 10px;
+	position: absolute;
+	top: 0px;
+	left: 100%;
+	transform: translate(-100%, 0%);
+}
+.flex
+{
+	display: flex;
+}
+.tab
+{
+	text-align: center;
+	width: 100%;
+	border: 2px solid #7F9FFF;
+	margin-right: -1px;
+	margin-left: -1px;
+	line-height: 25px;
+	vertical-align: middle;
+}
+.selected
+{
+	border-bottom: 2px solid #3F3F6F;
+}
+.unselected.tab:hover
+{
+	background-color: #000F3F;
+}
+.unselected.tab:active
+{
+	background-color: #000F7F;
+	color: white;
+}
+.selected
+{
+	background-color: #000F3F;
+}
+.interface
+{
+	width: calc(100% - 2px);
+	height: calc(100% - 90px);
+	background-color: #000F3F;
+	border-bottom: 2px solid #7F9FFF;
+	border-right: 2px solid #7F9FFF;
+	border-left: 2px solid #7F9FFF;
+	margin-right: -1px;
+	margin-left: -1px;
+}
+.top
+{
+	min-height: 60px;
+	text-align: center;
+	line-height: 50px;
+	vertical-align: middle;
+	font-size: 30;
+}
+
+#money
+{
+	position: absolute;
+	left: 5px;
+}
+
+.inventory, .equipment
+{
+	height: 100%;
+}
+#inventory, #equipment
+{
+	display: flex;
+}
+#inventory
+{
+	border-left: 2px solid #7F9FFF;
+	width: 100%;
+	flex-flow: wrap;
+	overflow-y: auto;
+	justify-content: flex-start;
+	align-items: flex-start;
+	align-content: flex-start;
+}
+#equipment
+{
+	flex-direction: column;
+	width: 50%;
+	position: relative;
+	overflow: hidden;
+}
+#ship-img
+{
+	content: url(/client/ship.png);
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	max-height: 100px;
+	max-width: 100px;
+	filter: blur(0.5px);
+}
+#weapons, #engines
+{
+	border-bottom: 2px solid #7F9FFF;
+}
+.equipment
+{
+	display: flex;
+	flex-flow: wrap;
+	justify-content: center;
+	z-index: 1;
+	background-color: rgba(0, 32, 64, 0.5);
+	overflow-y: auto;
+}
+.cell
+{
+	border: 2px solid #7F9FFF;
+	margin: -1px;
+	min-width: 100px;
+	max-width: 100px;
+	height: 100px;
+	background-position: center center;
+	background-repeat: no-repeat;
+}
+.filledCell div
+{
+	margin-right: 5px;
+	margin-top: 80px;
+	text-align: right;
+	color: #BBDDFF;
+}
+.filledCell:hover
+{
+	background-color: rgba(0, 128, 256, 0.5);
+}
+.equipment .cell
+{
+	transform: translate(0px, -50%);
+	position: relative;
+	top: 50%;
+}
+.label
+{
+	position: absolute;
+	left: 0;
+}
+.holdingText
+{
+	text-shadow: 0px 0px 8px #0000FF;
+	color: #BBDDFF;
+	z-index: 2;
+}
+
+#crafting
+{
+	flex-direction: column;
+	width: 50%;
+	position: relative;
+	overflow-y: auto;
+	padding-top: 15px;
+	text-align: center;
+	font-size: 33px;
+	padding-bottom: 20px;
+}
+#crafting div
+{
+	transform: translate(-50%, 0px);
+	position: relative;
+	left: 50%;
+}
+td
+{
+	padding: 0px;
+}
+table {
+	border-spacing: 0;
+	transform: translate(-50%, 0px);
+	position: relative;
+	left: 50%;
+}
+#convert
+{
+	line-height: 10px;
+	font-size: 60px;
+	min-width: 55px;
+	min-height: 55px;
+	border-radius: 10px;
+	color: #CCEEFF;
+	background-color: #003F7F;
+}
+#convert:hover
+{
+	color: #FFFFFF;
+	background-color: #007FFF;
+}
+#convert:disabled
+{
+	color: #667788;
+	background-color: #001F3F;
+	border-color: #667788;
+}
+#hand
+{
+	border: none;
+	z-index: 2;
+	position: absolute;
+	pointer-events: none;
+	transform: translate(-50%, -50%);
+}
+
+#buyDiv
+{
+	flex-direction: column;
+	overflow-y: auto;
+	overflow-x: hidden;
+}
+
+.itemInfo
+{
+	display: flex;
+	flex-wrap: wrap;
+	align-content: center;
+	justify-content: flex-start;
+	align-items: center;
+	min-height: 150px;
+	max-height: 150px;
+	margin: -2px;
+	width: 100%;
+	height: 150px;
+	text-align: left;
+	border: 2px solid #7F9FFF;
+}
+
+.shipCell
+{
+	border: 2px solid #7F9FFF;
+	margin: -2px;
+	min-height: 150px;
+	max-height: 150px;
+	min-width: 150px;
+	max-width: 150px;
+	background-position: center center;
+	background-repeat: no-repeat;
+}
+
+.itemDesc
+{
+	padding: 15px;
+}
+
+
+.buyBtn
+{
+	border: 2px solid #7F9FFF;
+	font-size: 32px;
+	min-width: 150px;
+	min-height: 55px;
+	max-height: 85px;
+	border-radius: 10px;
+	position: relative;
+	left: 100;
+}
+.buyBtn:active
+{
+	background-color: #66BBff;
+}
+.buyBtn:disabled
+{
+	color: #667788;
+	background-color: #001F3F;
+	border-color: #667788;
+}
+
+#alert
+{
+	color: #00007F;
+	border-radius: 10px;
+	border: 2px solid #7F9FFF;
+	font-size: 20px;
+	position: absolute;
+	left: 50%;
+	text-align: center;
+	background-color: #FF7F00;
+	max-width: 200px;
+	z-index: 3;
+	transform: translate(-50%, 0px);
+	text-shadow: 0px 0px 8px #FFFF00;
+}
+
+#sellDiv
+{
+	display: flex;
+	flex-direction: column;
+}
+#sell-bottom
+{
+	width: 100%;
+	height: 100px;
+	border-top: 2px solid #7F9FFF;
+}
+
+#sellButton
+{
+	border: 2px solid #7F9FFF;
+	font-size: 32px;
+	min-width: 150px;
+	min-height: 55px;
+	max-height: 85px;
+	border-radius: 10px;
+	transform: translate(-50%, -50%);
+	position: relative;
+	left: 50%;
+	top: 50%;
+}
+#sellButton:active
+{
+	background-color: #66BBff;
+}
+#sellButton:disabled
+{
+	color: #667788;
+	background-color: #001F3F;
+	border-color: #667788;
+}
+
+#controls
+{
+	margin: 20px;
+	color: #BBDDFF;
+}
+
+#controls b
+{
+	text-shadow: 0px 0px 20px #0000FF;
+}
+
+#loading
+{
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	width: 100%;
+	height: 100%;
+	text-shadow: 0px 0px 8px #0000FF;
+	color: #BBDDFF;
+	text-shadow: 0px 0px 20px #0000FF;
+	background-color: #000;
+	z-index: 999;
+}
+
+#load-bar
+{
+	transform: translate(-50%, -50%);
+	position: absolute;
+	left: 50%;
+	top: 50%;
+}

@@ -151,6 +151,7 @@ function onConnectionEstablished() {
 function startGame() {
   ship = player.body;
   camera = new Camera();
+  $(window).focus(centerCamera);
 
   window.webRTC = new WebRTC(UDPsocket, onConnectionEstablished, dataChannelSettings);
   minimap = new Minimap(map);
@@ -358,8 +359,6 @@ function showLandedUI() {
 function evalServer(msg) {
   socket.emit('evalServer', msg);
 }
-
-$(window).focus(centerCamera);
 
 Math.TWO_PI = Math.PI * 2;
 Math.HALF_PI = Math.PI * 0.5;

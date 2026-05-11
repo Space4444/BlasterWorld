@@ -1,0 +1,18 @@
+precision mediump float;
+
+varying vec2 vTextureCoord;//The coordinates of the current pixel
+uniform sampler2D uSampler;//The image data
+uniform sampler2D texture;
+
+void main(void) {
+    vec2 uv = vTextureCoord - 0.5;
+    float c = sqrt(dot(uv, uv));
+    float angle1 = asin(min(2.4 * c, 1.0));
+    float angle2 = atan(uv.y, uv.x);
+    vec2 result = angle1 / 3.14159265358979 * vec2(cos(angle2), sin(angle2)) + 0.5;
+    float tmp = (0.08333333333333 - max(0.0, c - 0.41666666666666)) * 12.0;
+    vec4 c1 = vec4(texture2D(texture, result).rgb, tmp * tmp);
+
+    vec4 c2 = texture2D(uSampler, vTextureCoord);
+    gl_FragColor = vec4(c1.rgb * c2.a * c1.a, c1.a * c2.a);
+}

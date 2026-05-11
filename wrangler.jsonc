@@ -14,11 +14,11 @@
 		"enabled": true
 	},
 	"upload_source_maps": true,
-	// "assets": {
-	// 	"directory": "./dist/client",
-	// 	"not_found_handling": "single-page-application"
-	// },
-	"assets": {  "directory": "./public/",  "binding": "ASSETS" },
+	"assets": {
+		"directory": "./dist/client",
+		"not_found_handling": "single-page-application"
+	},
+	// "assets": {  "directory": "./public/",  "binding": "ASSETS" },
 	/**
 	 * Smart Placement
 	 * https://developers.cloudflare.com/workers/configuration/smart-placement/#smart-placement
