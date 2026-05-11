@@ -517,7 +517,7 @@ class Universe {
     }
 
     static endLoad() {
-        document.body.removeChild(loading);
+        loading.remove();
         socket.emit('ready');//console.log('ready', socket.id);
     }
 

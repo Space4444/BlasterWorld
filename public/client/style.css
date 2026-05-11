@@ -96,8 +96,8 @@ body
 #map
 {
 	position: absolute;
-	right: 15;
-	bottom: 15;
+	right: 15px;
+	bottom: 15px;
 	border: 2px solid #7F9FFF;
 	background-color: rgba(0, 32, 64, 0.5);
 	z-index: 2;
@@ -108,8 +108,8 @@ body
 	width: 175px;
 	max-height: 271px;
 	position: absolute;
-	top: 15;
-	right: 15;
+	top: 15px;
+	right: 15px;
 	text-align: center;
 	padding: 5px;
 	line-height: 20px;
@@ -209,8 +209,8 @@ a
 .note
 {
 	position: absolute;
-	bottom: 0;
-	right: 0;
+	bottom: 0px;
+	right: 0px;
 	content: url(/client/note.png);
 	z-index: 3;
 }
@@ -221,8 +221,8 @@ a
 #landed-div
 {
 	position: absolute;
-	top: 0;
-	left: 0;
+	top: 0px;
+	left: 0px;
 	width: 100%;
 	height: 100%;
 	background-color: #000F1F;

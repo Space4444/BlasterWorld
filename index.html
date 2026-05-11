@@ -2,13 +2,145 @@
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
-		<link rel="icon" type="image/svg+xml" href="/vite.svg" />
+		<link rel="icon" type="image/png" href="/ufo.png" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Vite + React + TS</title>
+		<title>2D Galaxy</title>
+
+        
+        <script src = "https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <script src = "/socket.io/socket.io.js"></script>
+        <script type = "text/javascript" src="client/pixi_4_6_1.js"></script>
+        <script type = "text/javascript" src="client/pixi-particles.js"></script>
+        <script type = "text/javascript" src="client/pixi-picture.js"></script>
+        <script type = "text/javascript" src="client/pixi-projection.js"></script>
+        <script type = "text/javascript">!function(){function e(t,o){return n?void(n.transaction("s").objectStore("s").get(t).onsuccess=function(e){var t=e.target.result&&e.target.result.v||null;o(t)}):void setTimeout(function(){e(t,o)},100)}var t=window.indexedDB||window.mozIndexedDB||window.webkitIndexedDB||window.msIndexedDB;if(!t)return void console.error("indexDB not supported");var n,o={k:"",v:""},r=t.open("d2",1);r.onsuccess=function(e){n=this.result},r.onerror=function(e){console.error("indexedDB request error"),console.log(e)},r.onupgradeneeded=function(e){n=null;var t=e.target.result.createObjectStore("s",{keyPath:"k"});t.transaction.oncomplete=function(e){n=e.target.db}},window.ldb={get:e,set:function(e,t){o.k=e,o.v=t,n.transaction("s","readwrite").objectStore("s").put(o)}}}();
+        </script>
+        
+        <link href='/client/style.css' rel="stylesheet" />
 	</head>
 
 	<body>
 		<div id="root"></div>
-		<script type="module" src="/src/react-app/main.tsx"></script>
+		<script type="module" src="/src/react-app/main.jsx"></script>
+
+        
+        
+        <div id = "respawn-div" style = "display:none" align="center">
+            <h1>Your ship was destroyed...</h1>
+            <button id ="respawn-button" class = "game-button">respawn</button>
+        </div>
+
+        <script type="text/javascript">
+            $("#slide-button").click(function() {
+              $("#chat-text").slideToggle();
+            });
+
+            window.oncontextmenu = function() {
+              return false;
+            }
+        </script>
+
+        <script id="planetShader" type="shader">
+            
+            precision mediump float;
+
+            varying vec2 vTextureCoord;//The coordinates of the current pixel
+            uniform sampler2D uSampler;//The image data
+            uniform sampler2D texture, LightMap, ShadowMap;
+            uniform vec2 fi;
+            uniform float atmosphere, angle;
+
+            void main(void) {
+                vec2 uv = vTextureCoord - 0.5;
+                float c = sqrt(dot(uv, uv));
+                float angle1 = asin(min(2.2 * c, 1.0));
+                float angle2 = atan(uv.y, uv.x);
+                vec2 result = angle1 / 3.14159265358979 * vec2(cos(angle2), sin(angle2)) + 0.5;
+                result = vec2(mod((result.x + fi.x), 2.0) * 0.5, mod((result.y + fi.y), 1.0));
+                angle2 -= angle;
+                vec2 uv1 = vec2(cos(angle2), sin(angle2)) * c + 0.5;
+                vec4 r = (texture2D(texture, result) - 2.25 * vec4(texture2D(ShadowMap, uv1).rgb, 0.0));
+                vec4 t = vec4(texture2D(texture, vec2(2.0, 2.0)).rgb, texture2D(LightMap, uv1).r);
+                vec4 c1 = r * float(c < 0.454545454545) + t * atmosphere;
+
+                vec4 c2 = texture2D(uSampler, vTextureCoord);
+                gl_FragColor = vec4(c1.rgb * c2.a * c1.a, c1.a * c2.a);
+            }
+
+        </script>
+
+        <script id="starShader" type="shader">
+            
+            precision mediump float;
+
+            varying vec2 vTextureCoord;//The coordinates of the current pixel
+            uniform sampler2D uSampler;//The image data
+            uniform sampler2D texture;
+
+            void main(void) {
+                vec2 uv = vTextureCoord - 0.5;
+                float c = sqrt(dot(uv, uv));
+                float angle1 = asin(min(2.4 * c, 1.0));
+                float angle2 = atan(uv.y, uv.x);
+                vec2 result = angle1 / 3.14159265358979 * vec2(cos(angle2), sin(angle2)) + 0.5;
+                float tmp = (0.08333333333333 - max(0.0, c - 0.41666666666666)) * 12.0;
+                vec4 c1 = vec4(texture2D(texture, result).rgb, tmp * tmp);
+
+                vec4 c2 = texture2D(uSampler, vTextureCoord);
+                gl_FragColor = vec4(c1.rgb * c2.a * c1.a, c1.a * c2.a);
+            }
+
+        </script>
+
+        <script id="stationShader" type="shader">
+            
+            precision mediump float;
+
+            varying vec2 vTextureCoord;//The coordinates of the current pixel
+            uniform sampler2D uSampler;//The image data
+            uniform float over;
+            
+            void main(void) {
+                vec4 c = texture2D(uSampler, vTextureCoord);
+                float a = c.a;
+                vec3 col = vec3(0.0, 0.0, 1.0 - sqrt(c.b));
+                gl_FragColor = vec4((col + over * 0.2) * a, a);
+            }
+
+        </script>
+
+        <script id="backgroundShader" type="shader">
+            
+            precision mediump float;
+
+            varying vec2 vTextureCoord;//The coordinates of the current pixel
+            uniform sampler2D uSampler;//The image data
+            uniform vec2 pos, size;
+            
+            void main(void) {
+                vec2 coord = vTextureCoord - pos / size;
+                coord = coord - floor(coord);
+                gl_FragColor = texture2D(uSampler, coord);
+            }
+
+        </script>
+
+        <script id="foregroundShader" type="shader">
+            
+            precision mediump float;
+
+            varying vec2 vTextureCoord;//The coordinates of the current pixel
+            uniform sampler2D uSampler;//The image data
+            uniform vec2 pos, size;
+            
+            void main(void) {
+                vec2 coord = vTextureCoord - pos / size;
+                coord = coord - floor(coord);
+                vec4 c = texture2D(uSampler, coord);
+                gl_FragColor = vec4(c.rgb, c.r);
+            }
+
+        </script>
+
 	</body>
 </html>
