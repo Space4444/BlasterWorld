@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Client from './client.jsx';
-import Guest from './guest.jsx';
-import NotFound from './NotFound';
+import Client from './pages/Client';
+import Guest from './pages/Guest';
+import NotFound from './pages/NotFound';
 import "./style.css";
 
 
@@ -9,9 +9,10 @@ function App() {
 	return (
         <BrowserRouter>
             <Routes>
-                <Route path='client' element={<Guest/>} />
-                {/* <Route path='guest' element={<Guest/>} /> */}
-                <Route path='guest' element={<NotFound/>} />
+                <Route path='/' element={<Client/>} />
+                <Route path='client' element={<Client/>} />
+                <Route path='guest_' element={<Guest/>} />
+                <Route path='*' element={<NotFound/>} />
             </Routes>
         </BrowserRouter>
 	);

@@ -1,4 +1,17 @@
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
+
 export default function Client() {
+    const [username, setUsername] = useState('');
+    const navigate = useNavigate();
+    
+    function submit(e) {
+        e.preventDefault();
+
+        navigate('/guest_', { state: { username } });
+    }
+
     return (<>
         <div id="controls">
         <p>⬤ To fly forward press either <b>W</b>, <b>up arrow</b>, or <b>left mouse button</b></p>
@@ -10,12 +23,17 @@ export default function Client() {
 
             <h1>Blaster.World</h1>
 
-            <form action="/guest_" method="post">
+            <form onSubmit={submit}>
                 <div>
-                    <input type="text" placeholder="Nick" name="name"/>
+                    <input
+                        value={username}
+                        onChange={e => setUsername(e.target.value)}
+                        type='text'
+                        placeholder='Nick'
+                    />
                 </div>
 
-                <button type="submit" className="btn0">Play as guest</button>
+                <button className="btn0">Play as guest</button>
             </form>
 
             <hr/>

@@ -1,13 +1,18 @@
-import planetShader from './shaders/planetShader.txt';
-import starShader from './shaders/starShader.txt';
-import stationShader from './shaders/stationShader.txt';
-import backgroundShader from './shaders/backgroundShader.txt';
-import foregroundShader from './shaders/foregroundShader.txt';
+import planetShader from '../shaders/planetShader.txt';
+import starShader from '../shaders/starShader.txt';
+import stationShader from '../shaders/stationShader.txt';
+import backgroundShader from '../shaders/backgroundShader.txt';
+import foregroundShader from '../shaders/foregroundShader.txt';
 import { useEffect } from 'react';
+import { useLocation } from "react-router-dom";
 
 
 export default function Guest() {
+    const username = useLocation().state?.username || 'guest';
+
     async function addShader(src, id) {
+        if ( document.getElementById(id) ) return;
+
         const script = document.createElement('script');
         script.type = 'shader';
         script.id = id;
@@ -16,8 +21,11 @@ export default function Guest() {
     }
     
     function addScript(src) {
+        if ( document.getElementById(src) ) return;
+
         const script = document.createElement("script");
         script.src = src;
+        script.id = src;
         script.async = false;
         document.head.appendChild(script);
     }
@@ -56,7 +64,7 @@ export default function Guest() {
             </div>
         <% } else {%> */}
             <div id="data" style = {{display: 'none'}}>
-                {'{"name": "guest"}'}
+                {`{"name": "${username}"}`}
                 {/* {"name":"<%=name%>"} */}
             </div>
         {/* <% } %> */}
