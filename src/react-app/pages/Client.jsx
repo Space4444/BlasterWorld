@@ -10,26 +10,26 @@ export default function Client() {
     async function submit(e) {
         e.preventDefault();
 
-        // const { data, error } = await signUp.email({ 
-        //     email: username, 
-        //     password: "password123", 
-        //     name: "John Doe",
-        //     // callbackURL: "/dashboard" // Optional: where to go after verification
-        // }, { 
-        //     onSuccess: () => { console.log('success!!!!!!!!!!!!!!!'); },
-        //     onError: (ctx) => { alert(ctx.error.message); }
-        // });
-        await signIn.email({
-            email: username,
-            password: "password123"
-        }, {
-            onSuccess: () => {
-                console.log('success!!!!!!!!!!!!!!!');
-            },
-            onError: (error) => {
-                console.error(error);
-            },
+        const { data, error } = await signUp.email({ 
+            email: username, 
+            password: "password123", 
+            name: "John Doe",
+            // callbackURL: "/dashboard" // Optional: where to go after verification
+        }, { 
+            onSuccess: () => { console.log('success!!!!!!!!!!!!!!!'); },
+            onError: (ctx) => { alert(ctx.error.message); }
         });
+        // await signIn.email({
+        //     email: username,
+        //     password: "password123"
+        // }, {
+        //     onSuccess: () => {
+        //         console.log('success!!!!!!!!!!!!!!!');
+        //     },
+        //     onError: (error) => {
+        //         console.error(error);
+        //     },
+        // });
 
         // navigate('/guest_', { state: { username } });
     }
