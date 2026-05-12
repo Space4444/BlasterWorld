@@ -28,7 +28,7 @@
   },
   "private": true,
   "scripts": {
-    "build": "echo 4",
+    "build": "tsc -b && vite build",
     "cf-typegen": "wrangler types",
     "check": "tsc && vite build && wrangler deploy --dry-run",
     "deploy": "wrangler deploy",
