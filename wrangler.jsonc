@@ -4,7 +4,7 @@
  */
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
-	"name": "blaster_world",
+	"name": "blasterworld",
 	"main": "./src/worker/server.min.js",
 	"compatibility_date": "2025-10-08",
 	"compatibility_flags": [
