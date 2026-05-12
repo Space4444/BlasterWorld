@@ -1,6 +1,8 @@
-import { Hono } from 'hono'
-const app = new Hono()
+import { Hono } from "hono";
+const app = new Hono<{ Bindings: Env }>();
 
-app.get('/', (c) => c.text('Hono!'))
+app.get("/api/", (c) => c.json({ name: "Cloudflare" }));
 
-export default app
+export default app;
+
+export { WebSocketServer } from './server.min.js';
