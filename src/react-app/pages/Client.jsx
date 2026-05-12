@@ -1,15 +1,37 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { signUp, signIn } from "../auth-client"; 
 
 
 export default function Client() {
     const [username, setUsername] = useState('');
     const navigate = useNavigate();
     
-    function submit(e) {
+    async function submit(e) {
         e.preventDefault();
 
-        navigate('/guest_', { state: { username } });
+        // const { data, error } = await signUp.email({ 
+        //     email: username, 
+        //     password: "password123", 
+        //     name: "John Doe",
+        //     // callbackURL: "/dashboard" // Optional: where to go after verification
+        // }, { 
+        //     onSuccess: () => { console.log('success!!!!!!!!!!!!!!!'); },
+        //     onError: (ctx) => { alert(ctx.error.message); }
+        // });
+        await signIn.email({
+            email: username,
+            password: "password123"
+        }, {
+            onSuccess: () => {
+                console.log('success!!!!!!!!!!!!!!!');
+            },
+            onError: (error) => {
+                console.error(error);
+            },
+        });
+
+        // navigate('/guest_', { state: { username } });
     }
 
     return (<>
