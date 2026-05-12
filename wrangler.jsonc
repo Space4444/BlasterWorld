@@ -57,5 +57,12 @@
                 "WebSocketServer"
             ]
         }
+    ],
+    "d1_databases": [
+        {
+            "binding": "DB",
+            "database_name": "blasterworld-db",
+            "database_id": "5fed6017-0202-4ce1-8c1c-286ebca76a12"
+        }
     ]
 }
