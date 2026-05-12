@@ -1,13 +1,20 @@
 import { betterAuth } from 'better-auth'
-import { env } from "cloudflare:workers";
+import { env } from 'cloudflare:workers';
 
 export const auth = betterAuth({
     baseURL: 'http://127.0.0.1:5173',
-  database: env.DB,
-  // Allow requests from the frontend development server
-  emailAndPassword: {
-    enabled: true,
-  },
+    trustedOrigins: [
+        'http://127.0.0.1:5173',
+        'http://localhost:5173',
+        'https://127.0.0.1:5173',
+        'https://localhost:5173',
+        'https://blasterworld.alexkach99.workers.dev'
+    ],
+    database: env.DB,
+    // Allow requests from the frontend development server
+    emailAndPassword: {
+        enabled: true,
+    },
 //   socialProviders: {
 //     github: {
 //       clientId: env.GITHUB_CLIENT_ID,

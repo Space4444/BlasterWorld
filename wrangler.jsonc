@@ -64,5 +64,8 @@
             "database_name": "blasterworld-db",
             "database_id": "5fed6017-0202-4ce1-8c1c-286ebca76a12"
         }
-    ]
+    ],
+    "secrets": {
+        "required": ["BETTER_AUTH_SECRET"],
+    },
 }

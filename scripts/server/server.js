@@ -207,7 +207,7 @@ Math.ang = d => {
 
 
 
-
+//echo <some_secret> | npx wrangler secret put BETTER_AUTH_SECRET
 
 import { Hono } from "hono";
 import { auth } from './auth';
