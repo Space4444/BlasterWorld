@@ -1,6 +1,20 @@
 import { betterAuth } from 'better-auth'
 import { env } from 'cloudflare:workers';
 
+
+function savePlayer(user) {
+    const { DB } = env;
+    const u_id = user.id;
+
+    DB.prepare("INSERT INTO players VALUES(?, 0, null, '0|1|1|1')")
+    .bind(u_id)
+    .raw();
+    DB.prepare('INSERT INTO items VALUES (?, 2, 1, 0, 0), (?, 3, 1, 1, 0), (?, 4, 1, 2, 0)')
+    .bind(u_id, u_id, u_id)
+    .raw();
+}
+
+
 export const auth = betterAuth({
     baseURL: 'http://127.0.0.1:5173',
     trustedOrigins: [
@@ -11,7 +25,13 @@ export const auth = betterAuth({
         'https://blasterworld.alexkach99.workers.dev'
     ],
     database: env.DB,
-    // Allow requests from the frontend development server
+    databaseHooks: {
+        user: {
+            create: {
+                after: savePlayer,
+            },
+        },
+    },
     emailAndPassword: {
         enabled: true,
     },

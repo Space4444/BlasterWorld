@@ -1,37 +1,22 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { signUp, signIn } from "../auth-client"; 
+import { useSession, signUp } from '../auth-client'; 
 
 
 export default function Client() {
     const [username, setUsername] = useState('');
     const navigate = useNavigate();
+    const { data: session } = useSession();
     
-    async function submit(e) {
+    useEffect(() => {
+        if (session) {
+            navigate('/profile_');
+        }
+    }, [session]);
+    
+    async function playAsGuest(e) {
         e.preventDefault();
-
-        // const { data, error } = await signUp.email({ 
-        //     email: username, 
-        //     password: "password123", 
-        //     name: "John Doe",
-        //     // callbackURL: "/dashboard" // Optional: where to go after verification
-        // }, { 
-        //     onSuccess: () => { console.log('success!!!!!!!!!!!!!!!'); },
-        //     onError: (ctx) => { alert(ctx.error.message); }
-        // });
-        await signIn.email({
-            email: username,
-            password: "password123"
-        }, {
-            onSuccess: () => {
-                console.log('success!!!!!!!!!!!!!!!');
-            },
-            onError: (error) => {
-                console.error(error);
-            },
-        });
-
-        // navigate('/guest_', { state: { username } });
+        navigate('/guest_', { state: { username } });
     }
 
     return (<>
@@ -45,7 +30,7 @@ export default function Client() {
 
             <h1>Blaster.World</h1>
 
-            <form onSubmit={submit}>
+            <form onSubmit={playAsGuest}>
                 <div>
                     <input
                         value={username}
@@ -64,8 +49,8 @@ export default function Client() {
 
             <div>
 
-                <a href="/login"><button className="btn">Log In</button></a>
-                <a href="/signup"><button className="btn">Signup</button></a>
+                <a href="/login_"><button className="btn">Log In</button></a>
+                <a href="/signup_"><button className="btn">Signup</button></a>
 
             </div>
 

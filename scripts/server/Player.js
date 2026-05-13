@@ -166,49 +166,28 @@ class Player extends Controller {
     this.syncDataOthers = [];
   }
 
-  authenticate(user) {
-    if (!(user && user['u_id'] && user['email'] && user['password'])) {
-      this.initGuestInventory();
-      this.emitInfo();
-      return;
+  authenticate(u_id) {
+    if (!u_id) {
+        this.initGuestInventory();
+        this.emitInfo();
+        return;
     }
 
-    this.name = user['email'].split('@')[0];
+    this.authenticated = true;
+    this.u_ID = u_id;
 
-    const client = this.connectToDB();
+    var prevPlayer;
+    for (var i in WebRTC.channels) {
+        const p = WebRTC.channels[i].player;
 
-    client.query('SELECT * FROM users WHERE u_id=$1', [user['u_id']], (err, res) => {
-      client.end();
-
-      if (err) {
-        console.error(err);
-      }
-
-      if (!res.rows.length) {
-        return;
-      }
-
-      const row = res.rows[0];
-      this.authenticated = row['email'] === user['email'] && row['password'] === user['password'];
-      this.u_ID = user['u_id'];
-
-      if (this.authenticated) {
-        var prevPlayer;
-        for (var i in WebRTC.channels) {
-          const p = WebRTC.channels[i].player;
-
-          if (p !== this && p.u_ID === this.u_ID) {
+        if (p !== this && p.u_ID === this.u_ID) {
             prevPlayer = p;
             p.socket.disconnect();
             break;
-          }
         }
+    }
 
-        this.load(prevPlayer);
-      } else {
-        this.socket.disconnect();
-      }
-    });
+    this.load(prevPlayer);
   }
 
   land(orb, timeOut) {
@@ -438,60 +417,66 @@ class Player extends Controller {
   }
 
   doLoad() {
-    const client = this.connectToDB();
-
     var finished = 0;
 
-    this.loadItems(client, () => { if (++finished === 2) { client.end(); this.emitInfo(); this.land(this.orb); } } );
-    this.loadInfo(client , () => { if (++finished === 2) { client.end(); this.emitInfo(); this.land(this.orb); } } );
+    this.loadItems(() => { if (++finished === 2) { this.emitInfo(); this.land(this.orb); } } );
+    this.loadInfo( () => { if (++finished === 2) { this.emitInfo(); this.land(this.orb); } } );
   }
 
   save() {
+    if ( !(this.dataChanged && this.authenticated) ) return;
+
     this.saving = true; //it will be true all the time while player is saving
-    const client = this.connectToDB();
 
     var finished = 0;
 
-    this.saveItems(client, () => { if (++finished === 2) { client.end(); this.saving = null; } } );
-    this.saveInfo(client , () => { if (++finished === 2) { client.end(); this.saving = null; } } );
+    this.saveItems(() => { if (++finished === 2) { this.saving = null; } } );
+    this.saveInfo( () => { if (++finished === 2) { this.saving = null; } } );
   }
 
-  loadItems(client, endCallback) {
+  loadItems(endCallback) {
     endCallback = endCallback || (()=>{});
 
-    client.query('SELECT place, position, type, amount FROM items WHERE player = $1', [this.u_ID], (err, res) => {
-      if (err) {
-        endCallback();
-        console.error(err);
-      }
+    DB.prepare('SELECT place, position, type, amount FROM items WHERE player = ?')
+    .bind(this.u_ID)
+    .raw()
+    .then(res => {
+        for (var i = 0, len = res.length; i < len; i++) {
+            const row = res[i];
+            const item = {
+                'place': row[0],
+                'position': row[1],
+                'type': row[2],
+                'amount': row[3]
+            }
+            const it = {'type': item['type'], 'amount': item['amount']};
+            Item.checkEquipment(item['type']);
 
-      for (var i = 0, len = res.rows.length; i < len; i++) {
-        const item = res.rows[i], it = {'type': item['type'], 'amount': item['amount']};
-
-        Item.checkEquipment(item['type']);
-
-        switch (item['place']) {
-          case 0: this.body.weapons[item['position']] = it; break;
-          case 1:
-          this.body.setEquipment('engines', item['position'], it);
-          this.body.engines[item['position']] = it;
-          break;
-          case 2:
-          this.body.setEquipment('other', item['position'], it);
-          this.body.other[item['position']] = it;
-          break;
-          case 3: this.items.inventory[item['position']] = it; break;
-          case 4: this.items.crafting[item['position']] = it; break;
-          case 5: this.items.result[item['position']] = it; break;
-          case 6: this.items.hand[item['position']] = it; break;
+            switch (item['place']) {
+                case 0: this.body.weapons[item['position']] = it; break;
+                case 1:
+                    this.body.setEquipment('engines', item['position'], it);
+                    this.body.engines[item['position']] = it;
+                    break;
+                case 2:
+                    this.body.setEquipment('other', item['position'], it);
+                    this.body.other[item['position']] = it;
+                    break;
+                case 3: this.items.inventory[item['position']] = it; break;
+                case 4: this.items.crafting[item['position']] = it; break;
+                case 5: this.items.result[item['position']] = it; break;
+                case 6: this.items.hand[item['position']] = it; break;
+            }
         }
-      }
 
-      endCallback();
-    });
+        endCallback();
+    }).catch(err => {
+        endCallback();
+        console.error('loadItems error:', err);
+    })
   }
 
-  saveItems(client, endCallback) {
+  saveItems(endCallback) {
     endCallback = endCallback || (()=>{});
 
     const strings = {insertStr: '', deleteStr: '', updateTypeStr: '', updateAmountStr: ''};
@@ -544,119 +529,123 @@ class Player extends Controller {
     var finished = 0;
 
     if (strings.updateTypeStr.length || strings.updateAmountStr.length) {
-      finished--;
+        finished--;
 
-      //console.log(strings.updateTypeStr + ' ' + strings.updateAmountStr);
-      client.query(`UPDATE items SET (type, amount) = 
-                    (CASE (place, position) ${strings.updateTypeStr} ELSE type END, 
-                     CASE (place, position) ${strings.updateAmountStr} ELSE amount END)
-                    WHERE player = $1`, [this.u_ID], (err, res) => {
-        if (++finished === 0) {
-          endCallback();
-        }
-
-        if (err) {
-          console.error(err);
-        }
-      });
+        //console.log(strings.updateTypeStr + ' ' + strings.updateAmountStr);
+        DB.prepare(`UPDATE items SET (type, amount) = 
+                        (CASE (place, position) ${strings.updateTypeStr} ELSE type END, 
+                        CASE (place, position) ${strings.updateAmountStr} ELSE amount END)
+                        WHERE player = ?`)
+        .bind(this.u_ID)
+        .raw()
+        .then(res => {
+            if (++finished === 0) {
+                endCallback();
+            }
+        }).catch(err => {
+            if (++finished === 0) {
+                endCallback();
+            }
+            console.error('saveItems UPDATE error:', err);
+        });
     }
 
     if (strings.insertStr.length) {
-      finished--;
+        finished--;
 
-      strings.insertStr = strings.insertStr.slice(1);//console.log(strings.insertStr);
-
-      client.query('INSERT INTO items(player, place, position, type, amount) VALUES' + strings.insertStr, null, (err, res) => {
-        if (++finished === 0) {
-          endCallback();
-        }
-
-        if (err) {
-          return console.error(err);
-        }
-      });
+        strings.insertStr = strings.insertStr.slice(1);//console.log(strings.insertStr);
+        DB.prepare('INSERT INTO items(player, place, position, type, amount) VALUES' + strings.insertStr)
+        .raw()
+        .then(res => {
+            if (++finished === 0) {
+                endCallback();
+            }
+        }).catch(err => {
+            if (++finished === 0) {
+                endCallback();
+            }
+            console.error('saveItems INSERT error:', err);
+        });
     }
 
     if (strings.deleteStr.length) {
-      finished--;
+        finished--;
 
-      strings.deleteStr = strings.deleteStr.slice(1);//console.log(strings.deleteStr);
+        strings.deleteStr = strings.deleteStr.slice(1);//console.log(strings.deleteStr);
 
-      client.query('DELETE FROM items WHERE (player, place, position) IN (' + strings.deleteStr + ')', null, (err, res) => {
-        if (++finished === 0) {
-          endCallback();
-        }
-
-        if (err) {
-          return console.error(err);
-        }
-      });
+        DB.prepare('DELETE FROM items WHERE (player, place, position) IN (' + strings.deleteStr + ')')
+        .raw()
+        .then(res => {
+            if (++finished === 0) {
+                endCallback();
+            }
+        }).catch(err => {
+            if (++finished === 0) {
+                endCallback();
+            }
+            console.error('saveItems DELETE error:', err);
+        });
     }
   }
 
   addToSqlString(strings, item, state, place, pos) {
     switch (state) {
       case 'added':
-      strings.insertStr += `,(${this.u_ID}, ${place}, ${pos}, '${item.type}', ${item.amount})`;
-      break;
+        strings.insertStr += `,('${this.u_ID}', ${place}, ${pos}, '${item.type}', ${item.amount})`;
+        break;
       case 'deleted':
-      strings.deleteStr += `,(${this.u_ID}, ${place}, ${pos})`;
-      break;
+        strings.deleteStr += `,('${this.u_ID}', ${place}, ${pos})`;
+        break;
       case 'changed':
-      strings.updateTypeStr += `WHEN (${place}, ${pos}) THEN '${item.type}'`;
-      strings.updateAmountStr += `WHEN (${place}, ${pos}) THEN '${item.amount}'`;
-      break;
+        strings.updateTypeStr += `WHEN (${place}, ${pos}) THEN '${item.type}'`;
+        strings.updateAmountStr += `WHEN (${place}, ${pos}) THEN '${item.amount}'`;
+        break;
     }
   }
 
-  loadInfo(client, endCallback) {
+  loadInfo(endCallback) {
     endCallback = endCallback || (()=>{});
 
-    client.query('SELECT money, orb, ship FROM players WHERE p_id = $1', [this.u_ID], (err, res) => {
-      if (err) {
+    DB.prepare('SELECT money, orb, ship FROM players WHERE p_id = ?')
+    .bind(this.u_ID)
+    .raw()
+    .then(res => {
+        var row = res[0];
+        row = {
+            'money': row[0],
+            'orb': row[1],
+            'ship': row[2]
+        }
+
+        this.money = row['money']; // cheat line
+        this.orb = Orb.list[row['orb']];
+
+        const ship = row['ship'].split('|');
+        this.seed = +ship[0];
+        this.body.setSlotCounts( ship.slice(1) );
+
+        this.body.setHP( SpaceShip.getMaxHP(this.seed + 1) );
+
         endCallback();
-        console.error(err);
-      }
-
-      const row = res.rows[0];
-
-      this.money = row['money']; // cheat line
-      this.orb = Orb.list[row['orb']];
-
-      const ship = row['ship'].split('|');
-      this.seed = +ship[0];
-      this.body.setSlotCounts( ship.slice(1) );
-
-      this.body.setHP( SpaceShip.getMaxHP(this.seed + 1) );
-
-      endCallback();
+    }).catch(err => {
+        endCallback();
+        console.error('loadInfo error:', err);
     });
   }
 
-  saveInfo(client, endCallback) {
+  saveInfo(endCallback) {
     endCallback = endCallback || (()=>{});
 
     const shipInfo = [this.seed, this.body.weapons.size, this.body.engines.size, this.body.other.size].join('|');
-
-    client.query('UPDATE players SET (money, orb, ship) = ($1, $2, $3) WHERE p_id = $4',
-      [this.money, this.orb && this.orb.ID, shipInfo, this.u_ID], (err, res) => {
-      endCallback();
-
-      if (err) {
-        console.error(err);
-      }
+    DB.prepare('UPDATE players SET (money, orb, ship) = (?, ?, ?) WHERE p_id = ?')
+    .bind(this.money, this.orb && this.orb.ID || null, shipInfo, this.u_ID)
+    .raw()
+    .then(res => {
+        endCallback();
+    }).catch(err => {
+        endCallback();
+        console.error('saveInfo error:', err);
     });
-  }
-
-  connectToDB() {
-    const client = new Client({
-      connectionString: process.env.DATABASE_URL,
-      ssl: true,
-    });
-
-    client.connect();
-
-    return client;
   }
 
   emitInfo() {
@@ -840,7 +829,7 @@ class Player extends Controller {
     player.initVisibleLists();
     Player.addToVisibleLists(player.body);
 
-    player.authenticate(data['user'], socket);
+    player.authenticate(data['u_id'], socket);
   }
 
   static addSocketListeners(socket) {
@@ -920,12 +909,14 @@ class Player extends Controller {
       const orb = Orb.list[data];
       if (orb && !player.landed && ship.getSqrDistance(orb) < 10000) {
         player.land(orb, 1000);
+        player.dataChanged = true;
       }
     });
 
     socket.on('takingOff', () => {
       if (player.landed) {
         player.takeOff();
+        player.dataChanged = true;
       }
     });
 
@@ -1000,6 +991,8 @@ class Player extends Controller {
       p = channel.player;
       delete WebRTC.channels[socket.id];
     }
+
+    p.save();
 
     Player.delFromLists(socket.id);
 

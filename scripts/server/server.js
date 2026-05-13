@@ -206,24 +206,34 @@ Math.ang = d => {
 
 
 
-
-//echo <some_secret> | npx wrangler secret put BETTER_AUTH_SECRET
-
-import { Hono } from "hono";
+/*
+echo <some_secret> | npx wrangler secret put BETTER_AUTH_SECRET
+npx wrangler d1 create blasterworld-db
+npx wrangler d1 migrations create blasterworld-db create_game_tables
+npx prisma init --datasource-provider sqlite
+npx prisma migrate diff --from-empty --to-schema ./prisma/schema.prisma --script --output migrations/2027_create_game_tables.sql
+npx wrangler d1 migrations apply blasterworld-db --local
+npx wrangler d1 migrations apply blasterworld-db --remote
+.minimize/debugall.sh
+*/
+import { Hono } from 'hono';
 import { auth } from './auth';
+import { env } from 'cloudflare:workers';
+
+const { DB } = env;
 
 const router = new Hono({
-  strict: false,
+    strict: false,
 });
 
 router.on(['POST', 'GET'], '/auth/*', (c) => {
-  return auth.handler(c.req.raw)
+    return auth.handler(c.req.raw)
 });
 
 const app = new Hono({
-  strict: false,
+    strict: false,
 });
-app.basePath("/api").route("/", router);
+app.basePath('/api').route('/', router);
 
 
 
@@ -253,21 +263,6 @@ export default {
             return stub.fetch(request);
         }
 
-        // if (request.url.endsWith('/guest_')) {
-        //     if (request.method === 'POST') {
-        //         const data = await request.formData();
-        //         const name = data.get('name');
-        //         const response = await env.ASSETS.fetch(new URL(request.url).origin + '/guest');
-        //         return new HTMLRewriter()
-        //             .on('div#data', {
-        //                 element(element) {
-        //                     element.setInnerContent( JSON.stringify({name}) );
-        //                 }
-        //             })
-        //             .transform(response);
-        //     }
-        // }
-
         return app.fetch(request, env, ctx);
     },
 };
@@ -287,6 +282,10 @@ export class WebSocketServer extends DurableObject {
     async fetch(request) {
         console.log('connecting websocket');
         io = this;
+        
+        const session = await auth.api.getSession({
+            headers: request.headers,
+        });
 
         // waiting for Universe initialization
         await waitFor( () => (Orb.station.x * Orb.station.x + Orb.station.y * Orb.station.y > 6e6) );
@@ -305,6 +304,7 @@ export class WebSocketServer extends DurableObject {
         socket.on = (label, callback) => socket.callbacks.set(label, callback);
         socket.once = (label, callback) => socket.callbacks.set(label, callback);
         socket.emit = (label, message) => this.socketEmit(socket, label, message);
+        socket.disconnect = () => this.handleConnectionClose(socket);
         socket.broadcast = {
             emit: (label, message) => {
                 this.socketBroadcastEmit(socket, label, message);
@@ -315,7 +315,16 @@ export class WebSocketServer extends DurableObject {
         socket.on('signIn', data => {
             console.log(`player connected ${id}`);
             socket.UDPsocket = socket;
-            Player.onConnect(socket, data);
+            if (session) {
+                const { user } = session;
+                data = {
+                    name: user.name,
+                    u_id: user.id
+                };
+                Player.onConnect(socket, data);
+            } else {
+                Player.onConnect(socket, data);
+            }
         });
 
         server.addEventListener('message', (event) => {
@@ -347,6 +356,7 @@ export class WebSocketServer extends DurableObject {
 
     async handleConnectionClose(socket) {
         console.log('connection closed');
+        Player.onDisconnect(socket);
         this.sockets.delete(socket.id);
         socket.server.close(1000, 'Durable Object is closing WebSocket');
         socket.server = { send() {} };
