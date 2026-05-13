@@ -37,6 +37,7 @@
 	 * https://developers.cloudflare.com/workers/configuration/secrets/
 	 */
 	"vars": {
+        "BETTER_AUTH_URL": "https://blasterworld.alexkach99.workers.dev",
         "GOOGLE_CLIENT_ID": "960462075296-mdv38il3m23cptsb7mmrtiroi19nrs62.apps.googleusercontent.com"
     },
 	/**
