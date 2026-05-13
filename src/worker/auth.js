@@ -27,7 +27,15 @@ function verify({password, hash}) {
 }
 
 export const auth = betterAuth({
-    baseURL: env.BETTER_AUTH_URL,
+    baseURL: {
+        allowedHosts: [
+            'http://127.0.0.1:5173',
+            'http://localhost:5173',
+            'https://127.0.0.1:5173',
+            'https://localhost:5173',
+            'https://blasterworld.alexkach99.workers.dev'
+        ],
+    },
     trustedOrigins: [
         'http://127.0.0.1:5173',
         'http://localhost:5173',

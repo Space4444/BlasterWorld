@@ -27,8 +27,7 @@ export default function Client() {
             provider
         }, {
             onSuccess: () => {
-                toast.success('Login successful!');
-                navigate('/profile_');
+                toast.loading('Signing in...');
             },
             onError: (ctx) => {
                 toast.error(ctx.error.message);
@@ -38,7 +37,7 @@ export default function Client() {
 
     return (<>
         <Toaster />
-        
+
         <div id="controls">
         <p>⬤ To fly forward press either <b>W</b>, <b>up arrow</b>, or <b>left mouse button</b></p>
         <p>⬤ You can also fly backwards by pressing either <b>S</b>, <b>down arrow</b>, or <b>right mouse button</b></p>
