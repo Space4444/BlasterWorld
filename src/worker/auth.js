@@ -3,15 +3,18 @@ import { env } from 'cloudflare:workers';
 
 
 function savePlayer(user) {
+    console.log('savePlayer');
     const { DB } = env;
     const u_id = user.id;
 
+    console.log('saving player...');
     DB.prepare("INSERT INTO players VALUES(?, 0, null, '0|1|1|1')")
     .bind(u_id)
     .raw();
     DB.prepare('INSERT INTO items VALUES (?, 2, 1, 0, 0), (?, 3, 1, 1, 0), (?, 4, 1, 2, 0)')
     .bind(u_id, u_id, u_id)
     .raw();
+    console.log('saved.');
 }
 
 
