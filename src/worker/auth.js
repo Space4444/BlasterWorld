@@ -22,7 +22,7 @@ function hash(password) {
     return password;
 }
 
-function verify(password, hash) {
+function verify({password, hash}) {
     return password === hash;
 }
 
@@ -48,7 +48,7 @@ export const auth = betterAuth({
         enabled: true,
         password: {
             hash: (password) => hash(password),
-            verify: (password, hash) => verify(password, hash),
+            verify: (data) => verify(data),
         }
     },
 //   socialProviders: {
