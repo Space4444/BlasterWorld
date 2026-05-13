@@ -15,15 +15,27 @@ function savePlayer(user) {
         console.log('player saved');
     }, err => {
         console.log('player saving error:', err);
+    })
+    .catch(err => {
+        console.log('player saving error 2:', err);
+    })
+    .finally(() => {
+        console.log('player saving finished');
     });
     DB.prepare('INSERT INTO items VALUES (?, 2, 1, 0, 0), (?, 3, 1, 1, 0), (?, 4, 1, 2, 0)')
     .bind(u_id, u_id, u_id)
-    .raw()
+    .run()
     .then(res => {
         console.log('player items saved');
     }, err => {
         console.log('player items saving error:', err);
-    });
+    })
+    .catch(err => {
+        console.log('player items saving error 2:', err);
+    })
+    .finally(() => {
+        console.log('player items saving finished');
+    });;
 }
 
 
