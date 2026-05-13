@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useSession, signUp } from '../auth-client'; 
+import toast, { Toaster } from 'react-hot-toast';
+import { useSession, signUp, signIn } from '../auth-client'; 
 
 
 export default function Client() {
@@ -19,7 +20,25 @@ export default function Client() {
         navigate('/guest_', { state: { username } });
     }
 
+    async function socialLogin(provider, e) {
+        e.preventDefault();
+
+        return signIn.social({
+            provider
+        }, {
+            onSuccess: () => {
+                toast.success('Login successful!');
+                navigate('/profile_');
+            },
+            onError: (ctx) => {
+                toast.error(ctx.error.message);
+            },
+        });
+    }
+
     return (<>
+        <Toaster />
+        
         <div id="controls">
         <p>⬤ To fly forward press either <b>W</b>, <b>up arrow</b>, or <b>left mouse button</b></p>
         <p>⬤ You can also fly backwards by pressing either <b>S</b>, <b>down arrow</b>, or <b>right mouse button</b></p>
@@ -51,6 +70,7 @@ export default function Client() {
 
                 <a href="/login_"><button className="btn">Log In</button></a>
                 <a href="/signup_"><button className="btn">Signup</button></a>
+                <button className="btn" onClick={e => socialLogin('google', e)}>Sign in with Google</button>
 
             </div>
 

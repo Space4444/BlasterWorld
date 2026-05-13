@@ -26,7 +26,6 @@ function verify({password, hash}) {
     return password === hash;
 }
 
-
 export const auth = betterAuth({
     baseURL: 'http://127.0.0.1:5173',
     trustedOrigins: [
@@ -51,14 +50,14 @@ export const auth = betterAuth({
             verify: (data) => verify(data),
         }
     },
-//   socialProviders: {
-//     github: {
-//       clientId: env.GITHUB_CLIENT_ID,
-//       clientSecret: env.GITHUB_CLIENT_SECRET,
-//     },
-//     google: {
-//       clientId: env.GOOGLE_CLIENT_ID,
-//       clientSecret: env.GOOGLE_CLIENT_SECRET,
-//     },
-//   },
+    socialProviders: {
+        // github: {
+        //     clientId: env.GITHUB_CLIENT_ID,
+        //     clientSecret: env.GITHUB_CLIENT_SECRET,
+        // },
+        google: {
+            clientId: env.GOOGLE_CLIENT_ID,
+            clientSecret: env.GOOGLE_CLIENT_SECRET,
+        },
+    },
 })

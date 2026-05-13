@@ -4,7 +4,7 @@ import Guest from './pages/Guest';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Profile from './pages/Profile';
-import NotFound from './pages/NotFound';
+import ApiCall from './pages/ApiCall';
 import "./style.css";
 
 
@@ -18,7 +18,7 @@ function App() {
                 <Route path='login_' element={<Login/>} />
                 <Route path='signup_' element={<Signup/>} />
                 <Route path='profile_' element={<Profile/>} />
-                <Route path='*' element={<NotFound/>} />
+                <Route path='*' element={<ApiCall/>} />
             </Routes>
         </BrowserRouter>
 	);

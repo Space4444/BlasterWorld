@@ -210,6 +210,7 @@ Math.ang = d => {
 echo <some_secret> | npx wrangler secret put BETTER_AUTH_SECRET
 npx wrangler d1 create blasterworld-db
 npx wrangler d1 migrations create blasterworld-db create_game_tables
+npx auth generate --config src/worker/auth-config.js
 npx prisma init --datasource-provider sqlite
 npx prisma migrate diff --from-empty --to-schema ./prisma/schema.prisma --script --output migrations/2027_create_game_tables.sql
 npx wrangler d1 migrations apply blasterworld-db --local
