@@ -38,6 +38,14 @@ function savePlayer(user) {
     });;
 }
 
+function hash(password) {
+    return password;
+}
+
+function verify(password, hash) {
+    return password === hash;
+}
+
 
 export const auth = betterAuth({
     baseURL: 'http://127.0.0.1:5173',
@@ -58,6 +66,10 @@ export const auth = betterAuth({
     },
     emailAndPassword: {
         enabled: true,
+        password: {
+            hash: (password) => hash(password),
+            verify: (password, hash) => verify(password, hash),
+        }
     },
 //   socialProviders: {
 //     github: {
