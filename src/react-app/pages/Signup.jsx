@@ -13,6 +13,8 @@ export default function Login() {
     const [confirmPassword, setConfirmPassword] = useState('');
     const navigate = useNavigate();
     const { data: session } = useSession();
+
+    useEffect(() => window.seed && location.reload(), [window.seed]);
     
     useEffect(() => {
         if (session) {
@@ -43,7 +45,6 @@ export default function Login() {
         }, { 
             onSuccess: () => {
                 toast.success('Registration successful!');
-                navigate('/profile_');
             },
             onError: (ctx) => {
                 toast.error(ctx.error.message);

@@ -10,6 +10,8 @@ export default function Profile() {
     const navigate = useNavigate();
     const { data: session, isPending } = useSession();
 
+    useEffect(() => window.seed && location.reload(), [window.seed]);
+
     useEffect(() => {
         if (!isPending && !session) {
             navigate('/');
@@ -21,7 +23,6 @@ export default function Profile() {
             fetchOptions: {
                 onSuccess: () => {
                     toast.success('Logout successful!');
-                    navigate('/');
                 },
                 onError: (ctx) => {
                     toast.error(ctx.error.message);

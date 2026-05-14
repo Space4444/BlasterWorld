@@ -17,6 +17,8 @@ export default function Client() {
             navigate('/profile_');
         }
     }, [session]);
+
+    useEffect(() => window.seed && location.reload(), [window.seed]);
     
     async function playAsGuest(e) {
         e.preventDefault();
