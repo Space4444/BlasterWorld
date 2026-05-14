@@ -37,7 +37,9 @@
 	 * https://developers.cloudflare.com/workers/configuration/secrets/
 	 */
 	"vars": {
-        "GOOGLE_CLIENT_ID": "960462075296-mdv38il3m23cptsb7mmrtiroi19nrs62.apps.googleusercontent.com"
+        "GOOGLE_CLIENT_ID": "960462075296-mdv38il3m23cptsb7mmrtiroi19nrs62.apps.googleusercontent.com",
+        "GITHUB_CLIENT_ID": "Iv23li9SMODVZeKxbhDq",
+        "FACEBOOK_CLIENT_ID": "950807244605417"
     },
 	/**
 	 * Service Bindings (communicate between multiple Workers)
@@ -68,6 +70,6 @@
         }
     ],
     "secrets": {
-        "required": ["BETTER_AUTH_SECRET", "GOOGLE_CLIENT_SECRET"],
+        "required": ["BETTER_AUTH_SECRET", "GOOGLE_CLIENT_SECRET", "GITHUB_CLIENT_SECRET", "FACEBOOK_CLIENT_SECRET"],
     },
 }

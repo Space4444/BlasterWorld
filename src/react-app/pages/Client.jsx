@@ -70,6 +70,8 @@ export default function Client() {
                 <a href="/login_"><button className="btn">Log In</button></a>
                 <a href="/signup_"><button className="btn">Signup</button></a>
                 <button className="btn" onClick={e => socialLogin('google', e)}>Sign in with Google</button>
+                <button className="btn" onClick={e => socialLogin('github', e)}>Sign in with Github</button>
+                <button className="btn" onClick={e => socialLogin('facebook', e)}>Sign in with Facebook</button>
 
             </div>
 
