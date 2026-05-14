@@ -18,12 +18,60 @@ async function savePlayer(user) {
     console.log('player items saved');
 }
 
-function hash(password) {
-    return password;
+async function hashPassword(password) {
+  const encoder = new TextEncoder();
+  const salt = crypto.getRandomValues(new Uint8Array(16)); // 1. Generate salt
+  const passwordBuffer = encoder.encode(password);
+
+  // 2. Import password
+  const key = await crypto.subtle.importKey(
+    'raw', passwordBuffer, { name: 'PBKDF2' },
+    false, ['deriveBits']
+  );
+
+  // 3. Derive bits (hash)
+  const derivedBits = await crypto.subtle.deriveBits(
+    {
+      name: 'PBKDF2',
+      salt: salt,
+      iterations: 100000,
+      hash: 'SHA-256'
+    },
+    key,
+    256 // Length in bits
+  );
+  
+  // Return salt and hash to be stored
+  return salt.toHex() + '$' + new Uint8Array(derivedBits).toHex();
 }
 
-function verify({password, hash}) {
-    return password === hash;
+async function verifyPassword({password, hash}) {
+  const storedSalt = Uint8Array.fromHex( hash.slice(0, 32) );
+  const storedHash = Uint8Array.fromHex( hash.slice(33) );
+  const encoder = new TextEncoder();
+  const passwordBuffer = encoder.encode(password);
+
+  // 1. Import new password
+  const key = await crypto.subtle.importKey(
+    'raw', passwordBuffer, { name: 'PBKDF2' },
+    false, ['deriveBits']
+  );
+
+  // 2. Hash it with existing salt
+  const derivedBits = await crypto.subtle.deriveBits(
+    {
+      name: 'PBKDF2',
+      salt: storedSalt,
+      iterations: 100000,
+      hash: 'SHA-256'
+    },
+    key,
+    256
+  );
+
+  // 3. Constant-time comparison
+  const newHash = new Uint8Array(derivedBits);
+  return crypto.subtle.timingSafeEqual(storedHash, newHash);
 }
 
 export const auth = betterAuth({
@@ -54,8 +102,8 @@ export const auth = betterAuth({
     emailAndPassword: {
         enabled: true,
         password: {
-            hash: (password) => hash(password),
-            verify: (data) => verify(data),
+            hash: (password) => hashPassword(password),
+            verify: (data) => verifyPassword(data),
         }
     },
     socialProviders: {
