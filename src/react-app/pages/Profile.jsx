@@ -46,7 +46,7 @@ export default function Profile() {
             <h1 className="text-3xl leading-loose">Galactic Battles</h1>
             
             <div className="flex items-center justify-center">
-                {session && <p className="text-3xl leading-loose">Welcome, {session.user.name}!</p>}
+                {session && <p className="text-3xl leading-loose font-bold">Welcome, {session.user.name}!</p>}
             </div>
         </div>
         
