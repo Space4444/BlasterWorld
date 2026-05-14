@@ -739,6 +739,9 @@ class Player extends Controller {
       stats[i] = +stats[i].toFixed(2);
     }
 
+    if (category == 'engine' && stats['spd'] > 50) {
+        stats['spd'] = 50;
+    }
 
     const ID = Item.createID(category, subcategory, level, stats);
     const item = {'type': ID, 'amount': 1};
