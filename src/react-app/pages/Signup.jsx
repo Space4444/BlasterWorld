@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
-import toast, { Toaster } from 'react-hot-toast';
+import { useNavigate, Link } from 'react-router-dom';
 import { useSession, signUp } from '../auth-client'; 
-import { useNavigate } from 'react-router-dom';
+import { Button } from 'antd';
+import toast from 'react-hot-toast';
+import Toaster from '../components/Toaster';
 
 
 export default function Login() {
@@ -58,62 +60,73 @@ export default function Login() {
 
     <Toaster />
 
-    <div className="container">
+    <div className="container w-1/2 h-1/2">
 
-        <h1>Signup</h1>
+        <div className="h-1/2">
+            <h1 className="text-3xl leading-loose">Signup</h1>
 
-        <form onSubmit={signup} id="form">
-            <div>
-                <input
-                    value={email}
-                    onChange={e => setEmail(e.target.value)}
-                    type='text'
-                    placeholder='Email'
-                    required
-                />
-            </div>
-            <div>
-                <input
-                    value={password}
-                    onChange={e => setPassword(e.target.value)}
-                    type='password'
-                    placeholder='Password'
-                    required
-                />
-            </div>
-            <div>
-                <input
-                    value={confirmPassword}
-                    onChange={e => setConfirmPassword(e.target.value)}
-                    type='password'
-                    placeholder='Confirm password'
-                    required
-                />
-            </div>
+            <div className="flex items-center justify-center">
+                <form onSubmit={signup} id="form">
+                    <div>
+                        <input
+                            className="border-2 border-blue-500 text-white"
+                            value={email}
+                            onChange={e => setEmail(e.target.value)}
+                            type='text'
+                            placeholder='Email'
+                            required
+                        />
+                    </div>
+                    <div>
+                        <input
+                            className="border-2 border-blue-500 text-white"
+                            value={password}
+                            onChange={e => setPassword(e.target.value)}
+                            type='password'
+                            placeholder='Password'
+                            required
+                        />
+                    </div>
+                    <div>
+                        <input
+                            className="border-2 border-blue-500 text-white"
+                            value={confirmPassword}
+                            onChange={e => setConfirmPassword(e.target.value)}
+                            type='password'
+                            placeholder='Confirm password'
+                            required
+                        />
+                    </div>
 
-            <button className="btn0">Signup</button>
-        </form>
+                    <Button type="primary" className="m-1">Signup</Button>
+                </form>
+            </div>
+        </div>
 
         <hr/>
 
-        <p>Play as guest</p>
-
-        <form onSubmit={playAsGuest}>
+        <div className="h-1/2 flex items-center justify-center">
             <div>
-                <input
-                    value={username}
-                    onChange={e => setUsername(e.target.value)}
-                    type='text'
-                    placeholder='Nick'
-                />
+                <p>Play as guest</p>
+
+                <form onSubmit={playAsGuest}>
+                    <div>
+                        <input
+                            className="border-2 border-blue-500 text-white"
+                            value={username}
+                            onChange={e => setUsername(e.target.value)}
+                            type='text'
+                            placeholder='Nick'
+                        />
+                    </div>
+
+                    <Button type="primary" className="m-1">Play</Button>
+                </form>
+
+                <p>Already have an account? <Link to="/login_"><Button type="link" size="large">Login</Button></Link></p>
+                <p>Or go <Link to="/"><Button type="link" size="large">home</Button></Link>.</p>
             </div>
-
-            <button className="btn0">Play</button>
-        </form>
-
-        <p>Already have an account? <a href="/login_" className="lnk">Login</a></p>
-        <p>Or go <a href="/" className="lnk">home</a>.</p>
-
+        </div>
     </div>
 
     </>);

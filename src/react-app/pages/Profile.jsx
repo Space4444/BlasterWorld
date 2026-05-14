@@ -1,7 +1,9 @@
 import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import toast, { Toaster } from 'react-hot-toast';
+import { useNavigate, Link } from 'react-router-dom';
 import { useSession, signOut } from '../auth-client';
+import { Button } from 'antd';
+import toast from 'react-hot-toast';
+import Toaster from '../components/Toaster';
 
 
 export default function Profile() {
@@ -38,17 +40,23 @@ export default function Profile() {
     <p>⬤ To shoot press either <b>SPACEBAR</b>, or <b>middle mouse button</b></p>
     </div>
 
-    <div className="container">
-
-        <h1>Blaster.World</h1>
-
-        {session && <p>Welcome, {session.user.name}!</p>}
-
+    <div className="container w-1/2 h-1/2">
+        <div className="h-1/2">
+            <h1 className="text-3xl leading-loose">Galactic Battles</h1>
+            
+            <div className="flex items-center justify-center">
+                {session && <p className="text-3xl leading-loose">Welcome, {session.user.name}!</p>}
+            </div>
+        </div>
+        
         <hr/>
 
-        <p><a href="/guest_"><button className="play">Play!</button></a></p>
-        <p><a onClick={logOut} className="lnk">Logout</a></p>
-
+        <div className="h-1/2 flex items-center justify-center">
+            <div>
+                <p><Link to="/guest_"><Button type="primary" size="large" className="m-1" style={{padding:10}}>Play!</Button></Link></p>
+                <p><Button onClick={logOut} type="link" size="large">Logout</Button></p>
+            </div>
+        </div>
     </div>
 
     </>);

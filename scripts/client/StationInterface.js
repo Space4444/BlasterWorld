@@ -96,7 +96,7 @@ class StationInterface extends Interface {
 	initShop() {
 		for (var i = 0; i < 10; i++) {
 			const itemInfo = document.createElement('div');
-			itemInfo.classList.add('itemInfo');
+			itemInfo.classList.add('itemInfo', 'leading-none');
 
 			const shipCell = document.createElement('div');
 			shipCell.classList.add('shipCell');

@@ -1,14 +1,16 @@
+import { useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
+import { useSession } from '../auth-client';
 import planetShader from '../shaders/planetShader.txt';
 import starShader from '../shaders/starShader.txt';
 import stationShader from '../shaders/stationShader.txt';
 import backgroundShader from '../shaders/backgroundShader.txt';
 import foregroundShader from '../shaders/foregroundShader.txt';
-import { useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
 
 
 export default function Guest() {
     const username = useLocation().state?.username || 'guest';
+    const { data: session } = useSession();
 
     async function addShader(src, id) {
         if ( document.getElementById(id) ) return;
@@ -51,23 +53,13 @@ export default function Guest() {
             addScript("client/game.min.js");
         }
         addScripts();
-    }, []);
+        window.authenticated = !!session;
+    }, [session]);
 
     return (<div onContextMenu={(e) => e.preventDefault()}>
-        {/* <% if (auth) { %>
-            <div id="data" style = "display: none;">
-                {"user":{
-                    "u_id":"<%=user.u_id%>",
-                    "email":"<%=user.email%>",
-                    "password":"<%=user.password%>"
-                }}
-            </div>
-        <% } else {%> */}
-            <div id="data" style = {{display: 'none'}}>
-                {`{"name": "${username}"}`}
-                {/* {"name":"<%=name%>"} */}
-            </div>
-        {/* <% } %> */}
+        <div id="data" style = {{display: 'none'}}>
+            {`{"name": "${username}"}`}
+        </div>
 
         <div id="loading">
             <div id="load-bar">
@@ -90,10 +82,8 @@ export default function Guest() {
 
                 <form id = "chat-form" noValidate>
                     <input id = "chat-input" className = "chat" autoComplete = "off" type = "text"></input>
-                
-                    <button id = "send-button" className = "chat game-button">Send</button>
-                    
-                    <button id = "slide-button" className = "chat game-button" type="button" onClick={handleClick}>⇅</button>
+                    <button id = "send-button" className = "chat game-button px-1 mx-1">Send</button>
+                    <button id = "slide-button" className = "chat game-button px-1" type="button" onClick={handleClick}>⇅</button>
                 </form>
             </div>
         </div>
@@ -101,8 +91,8 @@ export default function Guest() {
         <div id = "landed-div" style = {{display: 'none'}}>
             <div id = "alert"></div>
             <div className = "top">
-                <div id = "money"></div>
-                <b>Space Station</b>
+                <div id = "money" className="text-2xl"></div>
+                <b className="text-2xl">Space Station</b>
             </div>
 
             <div className = "flex">
@@ -112,7 +102,7 @@ export default function Guest() {
                 <div className = "unselected tab" id = "equipmentTab">EQUIPMENT</div>
             </div>
 
-            <div className = "interface" id = "buyDiv"><p>Space ships:</p></div>
+            <div className = "interface" id = "buyDiv"><p className="leading-loose">Space ships:</p></div>
 
             <div className = "interface" id = "sellDiv" style = {{display: 'none'}}>
                 <div id = "sell-bottom">
@@ -161,7 +151,7 @@ export default function Guest() {
         </div>
         
         <div id = "respawn-div" style = {{display: 'none'}} align="center">
-            <h1>Your ship was destroyed...</h1>
+            <h1 className="text-5xl">Your ship was destroyed...</h1>
             <button id ="respawn-button" className = "game-button">respawn</button>
         </div>
     </div>);

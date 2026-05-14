@@ -96,7 +96,7 @@ function emitSignIn() {
   info.parentNode.removeChild(info);
   socket.emit('signIn', infoObject);
   
-  if (!infoObject['user']) {
+  if (!window.authenticated) {
     const note = document.createElement('div');
     document.body.appendChild(note);
     note.classList.add('note');

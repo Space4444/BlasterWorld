@@ -1,7 +1,10 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import toast, { Toaster } from 'react-hot-toast';
+import { useNavigate, Link } from 'react-router-dom';
+import { Button } from 'antd';
+import { GoogleCircleFilled, GithubOutlined } from '@ant-design/icons';
 import { useSession, signUp, signIn } from '../auth-client'; 
+import toast from 'react-hot-toast';
+import Toaster from '../components/Toaster';
 
 
 export default function Client() {
@@ -44,33 +47,50 @@ export default function Client() {
         <p>⬤ To shoot press either <b>SPACEBAR</b>, or <b>middle mouse button</b></p>
         </div>
 
-        <div className="container">
+        <div className="container w-1/2 h-1/2">
 
-            <h1>Blaster.World</h1>
+            <div className="h-1/2">
+                <h1 className="text-3xl leading-loose">Galactic Battles</h1>
 
-            <form onSubmit={playAsGuest}>
-                <div>
-                    <input
-                        value={username}
-                        onChange={e => setUsername(e.target.value)}
-                        type='text'
-                        placeholder='Nick'
-                    />
+                <div className="flex items-center justify-center">
+                    <form onSubmit={playAsGuest}>
+                        <div>
+                            <input
+                                className="border-2 border-blue-500 text-white"
+                                value={username}
+                                onChange={e => setUsername(e.target.value)}
+                                type='text'
+                                placeholder='Nick'
+                            />
+                        </div>
+
+                        <Button type="primary" className="m-1">Play as guest</Button>
+                    </form>
                 </div>
-
-                <button className="btn0">Play as guest</button>
-            </form>
+            </div>
 
             <hr/>
 
-            <br/><br/>
-
-            <div>
-
-                <a href="/login_"><button className="btn">Log In</button></a>
-                <a href="/signup_"><button className="btn">Signup</button></a>
-                <button className="btn" onClick={e => socialLogin('google', e)}>Sign in with Google</button>
-                <button className="btn" onClick={e => socialLogin('github', e)}>Sign in with Github</button>
+            <div className="h-1/2 flex items-center justify-center">
+            
+                <div>
+                    <Link to="/login_"><Button type="primary" className="m-1">Log in</Button></Link>
+                    <Link to="/signup_"><Button type="primary" className="m-1">Sign up</Button></Link>
+                    <br/>
+                    <Button
+                        icon={<GoogleCircleFilled />} 
+                        onClick={e => socialLogin('google', e)}
+                    >
+                        Sign in with Google
+                    </Button>
+                    <br/>
+                    <Button
+                        icon={<GithubOutlined />} 
+                        onClick={e => socialLogin('github', e)}
+                    >
+                        Sign in with Github
+                    </Button>
+                </div>
 
             </div>
 

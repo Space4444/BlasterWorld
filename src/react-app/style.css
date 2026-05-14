@@ -1,3 +1,5 @@
+@import "tailwindcss";
+
 html
 {
 	cursor: default;
@@ -5,7 +7,7 @@ html
 	overflow: hidden;
 	transition: none;
 	background-color: black;
-	margin: -8px;
+	/* margin: -8px; */
 	font-family: arial;
 }
 body
@@ -76,16 +78,16 @@ body
 #chat
 {
 	position: absolute;
-	bottom: 0px;
-	right: -17px;
-	left: 8px;
+	bottom: 7px;
+	right: -7px;
+	left: 7px;
 	z-index: 2;
 }
 #chat-text
 {
 	color: white;
 	height: 108;
-	overflow-y: scroll;
+	/* overflow-y: scroll; */
 }
 #chat-input
 {
@@ -96,8 +98,8 @@ body
 #map
 {
 	position: absolute;
-	right: 15px;
-	bottom: 15px;
+	right: 7px;
+	bottom: 7px;
 	border: 2px solid #7F9FFF;
 	background-color: rgba(0, 32, 64, 0.5);
 	z-index: 2;
@@ -108,8 +110,8 @@ body
 	width: 175px;
 	max-height: 271px;
 	position: absolute;
-	top: 15px;
-	right: 15px;
+	top: 7px;
+	right: 7px;
 	text-align: center;
 	padding: 5px;
 	line-height: 20px;
@@ -144,7 +146,6 @@ hr
 }
 .container input
 {
-	background-color: #ffffff;
 	border-radius: 4px;
 }
 .btn0
