@@ -98,7 +98,7 @@ export default function Login() {
                         />
                     </div>
 
-                    <Button type="primary" className="m-1">Signup</Button>
+                    <Button type="primary" className="m-1" htmlType="submit">Signup</Button>
                 </form>
             </div>
         </div>
@@ -120,7 +120,7 @@ export default function Login() {
                         />
                     </div>
 
-                    <Button type="primary" className="m-1">Play</Button>
+                    <Button type="primary" className="m-1" htmlType="submit">Play</Button>
                 </form>
 
                 <p>Already have an account? <Link to="/login_"><Button type="link" size="large">Login</Button></Link></p>

@@ -64,7 +64,7 @@ export default function Client() {
                             />
                         </div>
 
-                        <Button type="primary" className="m-1">Play as guest</Button>
+                        <Button type="primary" className="m-1" htmlType="submit">Play as guest</Button>
                     </form>
                 </div>
             </div>
