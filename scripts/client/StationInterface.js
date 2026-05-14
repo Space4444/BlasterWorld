@@ -101,9 +101,9 @@ class StationInterface extends Interface {
 			const shipCell = document.createElement('div');
 			shipCell.classList.add('shipCell');
 
-			const seed = i;
+			const shipSeed = i + seed - 200;
 
-			SpaceShip.getImage(seed, 1, src => {
+			SpaceShip.getImage(shipSeed, 1, src => {
 				shipCell.style.backgroundImage = `url(${src})`;
 			});
 

@@ -7,7 +7,7 @@ class Enemy extends NPC {
 
 		super(ID, lvl);
 
-		const seed = new Random(lvl).next(0x7FFFFFFF) | 0;
+		const seed = new Random(lvl + window.seed * 10 - 2000).next(0x7FFFFFFF) | 0;
 
 		this.body = new JetSpaceShip(ID, bodyPack, this, seed, images.trail);
 	}

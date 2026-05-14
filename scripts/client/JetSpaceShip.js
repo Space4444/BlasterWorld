@@ -45,7 +45,7 @@ class JetSpaceShip extends SpaceShip {
       case 7: return [3, 1, 3];
       case 8: return [4, 1, 1];
       case 9: return [4, 1, 3];
-      case 10: return [5, 1, 0];
+      case 10: return [5, 1, 4];
     }
   }
 
