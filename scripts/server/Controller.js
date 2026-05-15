@@ -60,30 +60,30 @@ class Controller {
 	}
 
 	static update25() {
-		for (var i in this.list) {
-			this.list[i].update25();
+		for (var i in Controller.list) {
+			Controller.list[i].update25();
 		}
 	}
 
 	static update15() {
-		for (var i in this.list) {
-			this.list[i].update15();
+		for (var i in Controller.list) {
+			Controller.list[i].update15();
 		}
 
 		this.synchronize();
 	}
 
 	static update2() {
-		for (var i in this.list) {
-			this.list[i].update2();
+		for (var i in Controller.list) {
+			Controller.list[i].update2();
 		}
 
 		Item.checkPlayers();
 	}
 
 	static update1() {
-		for (var i in this.list) {
-			this.list[i].update1();
+		for (var i in Controller.list) {
+			Controller.list[i].update1();
 		}
 
 		NPC.spawnAll();
@@ -94,8 +94,8 @@ class Controller {
 	}
 
 	static update_20() {
-		for (var i in this.list) {
-			this.list[i].update_20();
+		for (var i in Controller.list) {
+			Controller.list[i].update_20();
 		}
 	}
 
@@ -118,10 +118,10 @@ class Controller {
 	static get info() {
 		const pack = [];
 
-		for (var i in this.list) {
+		for (var i in Controller.list) {
 			pack.push({
-				'type': this.list[i].constructor.name,
-				'data': this.list[i].allInfo
+				'type': Controller.list[i].constructor.name,
+				'data': Controller.list[i].allInfo
 			});
 		}
 

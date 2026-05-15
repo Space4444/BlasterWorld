@@ -47,16 +47,16 @@ class Item {
 	static get info() {
 		const pack = [];
 
-		for (var i in this.list) {
-			pack.push(this.list[i].info);
+		for (var i in Item.list) {
+			pack.push(Item.list[i].info);
 		}
 
 		return pack;
 	}
 
 	static checkPlayers() {
-		for (var i in this.list) {
-			this.list[i].checkPlayers();
+		for (var i in Item.list) {
+			Item.list[i].checkPlayers();
 		}
 	}
 

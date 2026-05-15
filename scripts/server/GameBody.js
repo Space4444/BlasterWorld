@@ -157,8 +157,8 @@ class GameBody extends SpaceObject {
 	static get info() {
 		const pack = [];
 
-		for (var i in this.list) {
-			pack.push(this.list[i].info);
+		for (var i in GameBody.list) {
+			pack.push(GameBody.list[i].info);
 		}
 
 		return pack;
@@ -167,8 +167,8 @@ class GameBody extends SpaceObject {
 	static get iconData() {
 		const data = [];
 
-		for (var i in this.list) {
-			const body = this.list[i];
+		for (var i in GameBody.list) {
+			const body = GameBody.list[i];
 
 			data.push({
 				'ID': body.ID,
@@ -183,4 +183,3 @@ class GameBody extends SpaceObject {
 }
 GameBody.COLLISION_DAMAGE = 0.005;
 GameBody.list = {};
-GameBody.items = new Map();

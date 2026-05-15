@@ -243,7 +243,7 @@ import { DurableObject } from 'cloudflare:workers';
 var io;
 export default {
     async fetch(request, env, ctx) {
-        console.log('fetch');
+        console.log('fetch', request.url);
         if (request.url.endsWith('/websocket')) {
             const upgradeHeader = request.headers.get('Upgrade');
             if (!upgradeHeader || upgradeHeader !== 'websocket') {
@@ -328,6 +328,26 @@ export class WebSocketServer extends DurableObject {
             }
         });
 
+        socket.on('reconnect', data => {
+            console.log(`player reconnected ${data.id}`);
+            if (!data.id) return;
+            
+            this.sockets.delete(id);
+            this.sockets.set(data.id, socket);
+            socket.id = data.id;
+            socket.UDPsocket = socket;
+            if (session) {
+                const { user } = session;
+                data = {
+                    name: user.name,
+                    u_id: user.id
+                };
+                Player.create(socket, data);
+            } else {
+                Player.create(socket, data);
+            }
+        });
+
         server.addEventListener('message', (event) => {
             this.handleWebSocketMessage(socket, event.data);
         });
@@ -351,7 +371,7 @@ export class WebSocketServer extends DurableObject {
         try {
             callback?.(data);
         } catch(e) {
-            console.log('Error on WS message:', e);
+            console.log('Error on WS message', message, e);
         }
     }
 
