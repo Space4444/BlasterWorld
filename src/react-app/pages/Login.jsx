@@ -53,37 +53,37 @@ export default function Login() {
 
     <Toaster />
     
-    <div className="container w-1/2 h-1/2">
+    <div className="container w-1/2 h-1/2 min-h-80 min-w-60">
 
-        <div className="h-1/2">
+        <div className="h-1/6 flex items-center justify-center">
             <h1 className="text-3xl leading-loose">Login</h1>
+        </div>
 
-            <div className="flex items-center justify-center">
-                <form onSubmit={login}>
-                    <div>
-                        <input
-                            className="border-2 border-blue-500 text-white"
-                            value={email}
-                            onChange={e => setEmail(e.target.value)}
-                            type='text'
-                            placeholder='Email'
-                            required
-                        />
-                    </div>
-                    <div>
-                        <input
-                            className="border-2 border-blue-500 text-white"
-                            value={password}
-                            onChange={e => setPassword(e.target.value)}
-                            type='password'
-                            placeholder='Password'
-                            required
-                        />
-                    </div>
+        <div className="h-1/3 flex items-center justify-center">
+            <form onSubmit={login}>
+                <div>
+                    <input
+                        className="border-2 border-blue-500 text-white"
+                        value={email}
+                        onChange={e => setEmail(e.target.value)}
+                        type='text'
+                        placeholder='Email'
+                        required
+                    />
+                </div>
+                <div>
+                    <input
+                        className="border-2 border-blue-500 text-white"
+                        value={password}
+                        onChange={e => setPassword(e.target.value)}
+                        type='password'
+                        placeholder='Password'
+                        required
+                    />
+                </div>
 
-                    <Button type="primary" className="m-1" htmlType="submit">Login</Button>
-                </form>
-            </div>
+                <Button type="primary" className="m-1" htmlType="submit">Login</Button>
+            </form>
         </div>
 
         <hr/>

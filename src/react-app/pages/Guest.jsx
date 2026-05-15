@@ -77,10 +77,10 @@ export default function Guest() {
                 <div id = "l-list"></div>
             </div>
             
-            <div id = "chat">
-                <div id = "chat-text" className = "chatText"></div>
+            <div id = "chat" style={{pointerEvents: 'none'}}>
+                <div id = "chat-text" className = "chatText" style={{pointerEvents: 'none'}}></div>
 
-                <form id = "chat-form" noValidate>
+                <form id = "chat-form" style={{pointerEvents: 'auto'}} noValidate>
                     <input id = "chat-input" className = "chat" autoComplete = "off" type = "text"></input>
                     <button id = "send-button" className = "chat game-button px-1 mx-1">Send</button>
                     <button id = "slide-button" className = "chat game-button px-1" type="button" onClick={handleClick}>⇅</button>

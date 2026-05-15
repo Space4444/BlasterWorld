@@ -35,19 +35,19 @@ export default function Profile() {
 
     <Toaster />
 
-    <div id="controls">
+    <div id="controls" className="z-50 absolute">
     <p>⬤ To fly forward press either <b>W</b>, <b>up arrow</b>, or <b>left mouse button</b></p>
     <p>⬤ You can also fly backwards by pressing either <b>S</b>, <b>down arrow</b>, or <b>right mouse button</b></p>
     <p>⬤ To shoot press either <b>SPACEBAR</b>, or <b>middle mouse button</b></p>
     </div>
 
-    <div className="container w-1/2 h-1/2">
-        <div className="h-1/2">
+    <div className="container w-1/2 h-1/2 min-h-60 min-w-60 z-0 relative">
+        <div className="h-1/6 flex items-center justify-center">
             <h1 className="text-3xl leading-loose">Galactic Battles</h1>
-            
-            <div className="flex items-center justify-center">
-                {session && <p className="text-3xl leading-loose font-bold">Welcome, {session.user.name}!</p>}
-            </div>
+        </div>
+        
+        <div className="h-1/3 flex items-center justify-center">
+            {session && <p className="text-3xl font-bold">Welcome, {session.user.name}!</p>}
         </div>
         
         <hr/>

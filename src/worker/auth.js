@@ -77,6 +77,8 @@ async function verifyPassword({password, hash}) {
 export const auth = betterAuth({
     baseURL: {
         allowedHosts: [
+            'http://127.0.0.1:8787',
+            'http://localhost:8787',
             'http://127.0.0.1:5173',
             'http://localhost:5173',
             'https://127.0.0.1:5173',
@@ -85,6 +87,8 @@ export const auth = betterAuth({
         ],
     },
     trustedOrigins: [
+        'http://127.0.0.1:8787',
+        'http://localhost:8787',
         'http://127.0.0.1:5173',
         'http://localhost:5173',
         'https://127.0.0.1:5173',
