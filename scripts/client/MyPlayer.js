@@ -340,7 +340,9 @@ class MyPlayer extends Player {
     });
 
     socket.on('land', data => {
-      Player.list[data['player']].startLanding(data['orb']);
+      if (!player.landed) {
+        Player.list[data['player']].startLanding(data['orb']);
+      }
     });
 
     socket.on('takeOff', data => {

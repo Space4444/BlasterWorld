@@ -270,6 +270,7 @@ export default {
 
 export class WebSocketServer extends DurableObject {
     sockets;
+    state;
 
     constructor(ctx, env) {
         console.log('DurableObject constructor');
@@ -278,6 +279,16 @@ export class WebSocketServer extends DurableObject {
         Universe.start();
         Controller.setIntervals();
         console.log('started');
+
+        this.ctx.blockConcurrencyWhile(async () => {
+            console.log('loading');
+            const state = await this.ctx.storage.get('state');
+            this.state = state ?? { players: {} };
+            console.log('loaded:', this.state);
+            this.initState();
+        });
+
+        setInterval( () => this.saveState(), 10000);
     }
 
     async fetch(request) {
@@ -331,7 +342,7 @@ export class WebSocketServer extends DurableObject {
         socket.on('reconnect', data => {
             console.log(`player reconnected ${data.id}`);
             if (!data.id) return;
-            
+
             this.sockets.delete(id);
             this.sockets.set(data.id, socket);
             socket.id = data.id;
@@ -342,9 +353,9 @@ export class WebSocketServer extends DurableObject {
                     name: user.name,
                     u_id: user.id
                 };
-                Player.create(socket, data);
+                Player.onReconnect(socket, data);
             } else {
-                Player.create(socket, data);
+                Player.onReconnect(socket, data);
             }
         });
 
@@ -399,6 +410,16 @@ export class WebSocketServer extends DurableObject {
         this.sockets.forEach((socket, id) => {
             socket.server.send( JSON.stringify({label, data: message}) );
         });
+    }
+
+    initState() {
+
+    }
+
+    saveState() {
+        console.log('saving:', this.state);
+        this.ctx.storage.put('state', this.state);
+        console.log('saved');
     }
 }
 
