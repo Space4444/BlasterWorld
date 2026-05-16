@@ -1,5 +1,5 @@
 class Player extends Controller {
-  constructor(socket, name, money) {
+  constructor(socket, name, money, orb=null) {
     super(socket.id, money);
 
     WebRTC.channels[socket.id] = {'send': () => {}, player: this}; //TODELETE
@@ -16,7 +16,7 @@ class Player extends Controller {
       socket: socket,
       u_ID: null,
       landed: false,
-      orb: null,
+      orb,
       dataChanged: false,
       items: {
         inventory: [],
@@ -823,9 +823,10 @@ class Player extends Controller {
   }
 
   static onReconnect(socket, data) {//console.log('connected',socket.id);
-    const player = Player.create(socket, data);
+    // const orb = Orb.list[io.state.players[player.ID]];
+    const orb = Orb.list['0.730026384564141'];
 
-    player.orb = Orb.list[io.state.players[player.ID]];
+    const player = Player.create(socket, data, orb);
   }
 
   static onConnect(socket, data) {//console.log('connected',socket.id);
@@ -834,8 +835,8 @@ class Player extends Controller {
     socket.emit('seed', seed);
   }
 
-  static create(socket, data) {
-    const ID = socket.id, player = new Player(socket, data['name'], 0);
+  static create(socket, data, orb=null) {
+    const ID = socket.id, player = new Player(socket, data['name'], 0, orb);
     new WebRTC(socket, player);
 
     player.initVisibleLists();
