@@ -421,8 +421,34 @@ class Player extends Controller {
   doLoad() {
     var finished = 0;
 
-    this.loadItems(() => { if (++finished === 2) { this.emitInfo(); this.land(this.orb); } } );
-    this.loadInfo( () => { if (++finished === 2) { this.emitInfo(); this.land(this.orb); } } );
+    this.loadItems(() => { if (++finished === 2) {
+    try{
+        this.emitInfo();
+    }catch(e){
+        console.error('emitinfo error:', e);
+    }
+    try{
+        this.land(this.orb);
+    }catch(e){
+        console.error('land error:', e);
+    }
+    
+    } } );
+    this.loadInfo( () => { if (++finished === 2) {
+        
+    try{
+        this.emitInfo();
+    }catch(e){
+        console.error('emitinfo 2 error:', e);
+    }
+        
+    try{
+        this.land(this.orb);
+    }catch(e){
+        console.error('land 2 error:', e);
+    }
+    
+    } } );
   }
 
   save() {
@@ -443,7 +469,6 @@ class Player extends Controller {
     .bind(this.u_ID)
     .raw()
     .then(res => {
-        try{
         for (var i = 0, len = res.length; i < len; i++) {
             const row = res[i];
             const item = {
@@ -471,16 +496,8 @@ class Player extends Controller {
                 case 6: this.items.hand[item['position']] = it; break;
             }
         }
-    }catch(e) {
-console.log('loadItems 1 error:',e);
 
-    }
-    try{
         endCallback();
-    }catch(e) {
-console.log('loadItems 2 error:',e);
-
-    }
     }).catch(err => {
         endCallback();
         console.error('loadItems error:', err);
@@ -621,7 +638,6 @@ console.log('loadItems 2 error:',e);
     .bind(this.u_ID)
     .raw()
     .then(res => {
-        try{
         var row = res[0];
         row = {
             'money': row[0],
@@ -637,15 +653,8 @@ console.log('loadItems 2 error:',e);
         this.body.setSlotCounts( ship.slice(1) );
 
         this.body.setHP( SpaceShip.getMaxHP(this.seed + 1) );
-    }catch (e) {
-console.log('loadInfo 1 error:',e);
-    }
-        try{
-        endCallback();
-    }catch (e) {
-console.log('loadInfo 2 error:',e);
 
-    }
+        endCallback();
     }).catch(err => {
         endCallback();
         console.error('loadInfo error:', err);
