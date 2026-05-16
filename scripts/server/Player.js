@@ -197,7 +197,7 @@ class Player extends Controller {
     this.landed = true;
     setTimeout(() => Player.delFromLists(this.ID), timeOut);
     this.orb = orb;
-    io.state.players[this.ID] = orb.ID;
+    // io.state.players[this.ID] = orb.ID;
     io.emit('land', {'player': this.ID, 'orb': orb.ID});
   }
 
@@ -211,7 +211,7 @@ class Player extends Controller {
     this.body.y = this.orb.y;
     Player.addToLists(this);
     io.emit('takeOff', {'player': this.allFirstInfo, 'orb': this.orb.ID});
-    io.state.players[this.ID] = null;
+    // io.state.players[this.ID] = null;
     this.orb = null;
   }
 
