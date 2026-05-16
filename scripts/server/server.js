@@ -280,6 +280,7 @@ export class WebSocketServer extends DurableObject {
         Controller.setIntervals();
         console.log('started');
 
+        
         // this.ctx.blockConcurrencyWhile(async () => {
         //     console.log('loading');
         //     const state = await this.ctx.storage.get('state');
