@@ -281,15 +281,15 @@ export class WebSocketServer extends DurableObject {
         console.log('started');
 
         
-        // this.ctx.blockConcurrencyWhile(async () => {
-        //     console.log('loading');
-        //     const state = await this.ctx.storage.get('state');
-        //     this.state = state ?? { players: {} };
-        //     console.log('loaded:', JSON.stringify(this.state));
-        //     this.initState();
-        // });
+        this.ctx.blockConcurrencyWhile(async () => {
+            console.log('loading');
+            const state = await this.ctx.storage.get('state');
+            this.state = state ?? { players: {} };
+            console.log('loaded:', JSON.stringify(this.state));
+            this.initState();
+        });
 
-        // setInterval( () => this.saveState(), 10000);
+        setInterval( () => this.saveState(), 10000);
     }
 
     async fetch(request) {
@@ -418,9 +418,9 @@ export class WebSocketServer extends DurableObject {
     }
 
     saveState() {
-        // console.log('saving:', JSON.stringify(this.state));
-        // this.ctx.storage.put('state', this.state);
-        // console.log('saved');
+        console.log('saving:', JSON.stringify(this.state));
+        this.ctx.storage.put('state', this.state);
+        console.log('saved');
     }
 }
 

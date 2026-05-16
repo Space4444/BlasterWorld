@@ -1,5 +1,5 @@
 class Player extends Controller {
-  constructor(socket, name, money) {
+  constructor(socket, name, money, orb=null) {
     super(socket.id, money);
 
     WebRTC.channels[socket.id] = {'send': () => {}, player: this}; //TODELETE
@@ -16,7 +16,7 @@ class Player extends Controller {
       socket: socket,
       u_ID: null,
       landed: false,
-      orb: null,
+      orb,
       dataChanged: false,
       items: {
         inventory: [],
@@ -170,6 +170,7 @@ class Player extends Controller {
     if (!u_id) {
         this.initGuestInventory();
         this.emitInfo();
+        this.land(this.orb);
         return;
     }
 
@@ -196,7 +197,7 @@ class Player extends Controller {
     this.landed = true;
     setTimeout(() => Player.delFromLists(this.ID), timeOut);
     this.orb = orb;
-    // io.state.players[this.ID] = orb.ID;
+    io.state.players[this.ID] = orb.ID;
     io.emit('land', {'player': this.ID, 'orb': orb.ID});
   }
 
@@ -210,7 +211,7 @@ class Player extends Controller {
     this.body.y = this.orb.y;
     Player.addToLists(this);
     io.emit('takeOff', {'player': this.allFirstInfo, 'orb': this.orb.ID});
-    // io.state.players[this.ID] = null;
+    io.state.players[this.ID] = null;
     this.orb = null;
   }
 
@@ -620,7 +621,7 @@ class Player extends Controller {
         }
 
         this.money = row['money']; // cheat line
-        this.orb = Orb.list[row['orb']];
+        if (!this.orb) this.orb = Orb.list[row['orb']];
 
         const ship = row['ship'].split('|');
         this.seed = +ship[0];
@@ -822,9 +823,9 @@ class Player extends Controller {
   }
 
   static onReconnect(socket, data) {//console.log('connected',socket.id);
-    const player = Player.create(socket, data);
+    const orb = Orb.list[io.state.players[player.ID]];
 
-    // player.land(Orb.list[io.state.players[player.ID]]);
+    const player = Player.create(socket, data, orb);
   }
 
   static onConnect(socket, data) {//console.log('connected',socket.id);
@@ -833,8 +834,8 @@ class Player extends Controller {
     socket.emit('seed', seed);
   }
 
-  static create(socket, data) {
-    const ID = socket.id, player = new Player(socket, data['name'], 0);
+  static create(socket, data, orb=null) {
+    const ID = socket.id, player = new Player(socket, data['name'], 0, orb);
     new WebRTC(socket, player);
 
     player.initVisibleLists();
@@ -846,9 +847,6 @@ class Player extends Controller {
   }
 
   static addSocketListeners(socket) {
-    console.log('socket.id in Player.list:', socket.id in Player.list);
-    console.log('Object.keys(Player.list):', Object.keys(Player.list));
-    console.log('socket.id:', socket.id);
     const ID = socket.id, player = Player.list[socket.id], ship = player.body;
 
     socket.on('hit', data => {
