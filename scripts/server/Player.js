@@ -824,9 +824,9 @@ class Player extends Controller {
 
   static onReconnect(socket, data) {//console.log('connected',socket.id);
     // const orb = Orb.list[io.state.players[player.ID]];
-    const orb = Orb.list['0.730026384564141'];
+    // const orb = Orb.list['0.730026384564141'];
 
-    const player = Player.create(socket, data, orb);
+    const player = Player.create(socket, data);//, orb);
   }
 
   static onConnect(socket, data) {//console.log('connected',socket.id);
