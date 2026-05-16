@@ -652,12 +652,9 @@ class Player extends Controller {
 
   emitInfo() {
     const playerData = this.allFirstInfo;
-try{
+
     Player.addSocketListeners(this.socket);
-}catch(e){
-    console.error('addSocketListeners error:', e);
-}
-try{
+
     this.socket.emit('init', {
       'allInfo': Controller.info,
       'items': Item.info,
@@ -670,9 +667,6 @@ try{
       }
     });
     this.socket.broadcast.emit('playerJoined', playerData);
-}catch(e){
-    console.error('emit error:', e);
-}
   }
 
   craft() {
@@ -852,6 +846,8 @@ try{
   }
 
   static addSocketListeners(socket) {
+    console.log('Object.keys(Player.list):',Object.keys(Player.list));
+    console.log('socket.id:',socket.id);
     const ID = socket.id, player = Player.list[socket.id], ship = player.body;
 
     socket.on('hit', data => {
