@@ -186,6 +186,7 @@ class Player extends Controller {
             break;
         }
     }
+    console.log('authenticate !!this:', !!this);
 
     this.load(prevPlayer);
   }
@@ -410,18 +411,22 @@ class Player extends Controller {
       const checkIfSaving = setInterval(() => {
         if (!prevPlayer.saving) {
           clearInterval(checkIfSaving);
+    console.log('load !!this:', !!this);
           this.doLoad();
         }
       }, 1000);
     } else {
+    console.log('load 2 !!this:', !!this);
       this.doLoad();
     }
   }
 
   doLoad() {
     var finished = 0;
+    console.log('doLoad !!this:', !!this);
 
     this.loadItems(() => { if (++finished === 2) { this.emitInfo(); this.land(this.orb); } } );
+    console.log('doLoad 2 !!this:', !!this);
     this.loadInfo( () => { if (++finished === 2) { this.emitInfo(); this.land(this.orb); } } );
   }
 
@@ -606,12 +611,14 @@ class Player extends Controller {
   }
 
   loadInfo(endCallback) {
+    console.log('loadInfo !!this:', !!this);
     endCallback = endCallback || (()=>{});
 
     DB.prepare('SELECT money, orb, ship FROM players WHERE p_id = ?')
     .bind(this.u_ID)
     .raw()
     .then(res => {
+    console.log('loadInfo 2 !!this:', !!this);
         var row = res[0];
         row = {
             'money': row[0],
@@ -624,7 +631,9 @@ class Player extends Controller {
 
         const ship = row['ship'].split('|');
         this.seed = +ship[0];
+    console.log('loadInfo 3 !!this:', !!this);
         this.body.setSlotCounts( ship.slice(1) );
+    console.log('loadInfo 4 !!this:', !!this);
 
         this.body.setHP( SpaceShip.getMaxHP(this.seed + 1) );
 
