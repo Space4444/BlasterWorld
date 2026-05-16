@@ -846,6 +846,9 @@ class Player extends Controller {
   }
 
   static addSocketListeners(socket) {
+    console.log('socket.id in Player.list:', socket.id in Player.list);
+    console.log('Object.keys(Player.list):', Object.keys(Player.list));
+    console.log('socket.id:', socket.id);
     const ID = socket.id, player = Player.list[socket.id], ship = player.body;
 
     socket.on('hit', data => {
