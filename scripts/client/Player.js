@@ -172,6 +172,11 @@ class Player extends Controller {
   }
 
   static takeOff(data) {
+    if (!data) {
+        player.startTakingOff();
+        return;
+    }
+
     var p = Player.list[data['player']['controller']['ID']];
     if (!p) {
       p = new Player(data['player'], images.player, images.playerBullet, images.trail, shipExp);
