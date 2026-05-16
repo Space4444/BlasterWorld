@@ -186,7 +186,6 @@ class Player extends Controller {
             break;
         }
     }
-    console.log('authenticate !!this:', !!this);
 
     this.load(prevPlayer);
   }
@@ -411,22 +410,18 @@ class Player extends Controller {
       const checkIfSaving = setInterval(() => {
         if (!prevPlayer.saving) {
           clearInterval(checkIfSaving);
-    console.log('load !!this:', !!this);
           this.doLoad();
         }
       }, 1000);
     } else {
-    console.log('load 2 !!this:', !!this);
       this.doLoad();
     }
   }
 
   doLoad() {
     var finished = 0;
-    console.log('doLoad !!this:', !!this);
 
     this.loadItems(() => { if (++finished === 2) { this.emitInfo(); this.land(this.orb); } } );
-    console.log('doLoad 2 !!this:', !!this);
     this.loadInfo( () => { if (++finished === 2) { this.emitInfo(); this.land(this.orb); } } );
   }
 
@@ -443,12 +438,12 @@ class Player extends Controller {
 
   loadItems(endCallback) {
     endCallback = endCallback || (()=>{});
-    console.log('loadItems !!this:', !!this);
 
     DB.prepare('SELECT place, position, type, amount FROM items WHERE player = ?')
     .bind(this.u_ID)
     .raw()
     .then(res => {
+        try{
         for (var i = 0, len = res.length; i < len; i++) {
             const row = res[i];
             const item = {
@@ -459,20 +454,14 @@ class Player extends Controller {
             }
             const it = {'type': item['type'], 'amount': item['amount']};
             Item.checkEquipment(item['type']);
-    console.log('loadItems 2 !!this:', !!this);
 
             switch (item['place']) {
-                case 0:
-    console.log('loadItems 3 !!this:', !!this);
-                    
-                    this.body.weapons[item['position']] = it; break;
+                case 0: this.body.weapons[item['position']] = it; break;
                 case 1:
-    console.log('loadItems 4 !!this:', !!this);
                     this.body.setEquipment('engines', item['position'], it);
                     this.body.engines[item['position']] = it;
                     break;
                 case 2:
-    console.log('loadItems 5 !!this:', !!this);
                     this.body.setEquipment('other', item['position'], it);
                     this.body.other[item['position']] = it;
                     break;
@@ -482,8 +471,16 @@ class Player extends Controller {
                 case 6: this.items.hand[item['position']] = it; break;
             }
         }
+    }catch(e) {
+console.log('loadItems 1 error:',e);
 
+    }
+    try{
         endCallback();
+    }catch(e) {
+console.log('loadItems 2 error:',e);
+
+    }
     }).catch(err => {
         endCallback();
         console.error('loadItems error:', err);
@@ -618,14 +615,13 @@ class Player extends Controller {
   }
 
   loadInfo(endCallback) {
-    console.log('loadInfo !!this:', !!this);
     endCallback = endCallback || (()=>{});
 
     DB.prepare('SELECT money, orb, ship FROM players WHERE p_id = ?')
     .bind(this.u_ID)
     .raw()
     .then(res => {
-    console.log('loadInfo 2 !!this:', !!this);
+        try{
         var row = res[0];
         row = {
             'money': row[0],
@@ -638,13 +634,18 @@ class Player extends Controller {
 
         const ship = row['ship'].split('|');
         this.seed = +ship[0];
-    console.log('loadInfo 3 !!this:', !!this);
         this.body.setSlotCounts( ship.slice(1) );
-    console.log('loadInfo 4 !!this:', !!this);
 
         this.body.setHP( SpaceShip.getMaxHP(this.seed + 1) );
-
+    }catch (e) {
+console.log('loadInfo 1 error:',e);
+    }
+        try{
         endCallback();
+    }catch (e) {
+console.log('loadInfo 2 error:',e);
+
+    }
     }).catch(err => {
         endCallback();
         console.error('loadInfo error:', err);
@@ -840,9 +841,6 @@ class Player extends Controller {
   static onReconnect(socket, data) {//console.log('connected',socket.id);
     const player = Player.create(socket, data);
 
-    console.log('player.ID in io.state.players:', player.ID in io.state.players);
-    console.log('io.state.players[player.ID] in Orb.list:', io.state.players[player.ID] in Orb.list);
-    console.log('io.state.players[player.ID]:', io.state.players[player.ID]);
     player.land(Orb.list[io.state.players[player.ID]]);
   }
 
