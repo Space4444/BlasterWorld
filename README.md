@@ -2,7 +2,7 @@
 
 [Game website](https://blasterworld.alexkach99.workers.dev/profile_)
 
-This is multiplayer 2D space shooter made with JavaScript.
+This is multiplayer 2D space shooter made with JavaScript. Currently there is only web version for PC.
 
 In this game almost all of the textures are procedurally generated, including those of: space background with stars and nebulae; planets; main star in the star system; spaceships; equipment (weapons, engines and repair robots).
 
