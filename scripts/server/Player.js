@@ -421,34 +421,8 @@ class Player extends Controller {
   doLoad() {
     var finished = 0;
 
-    this.loadItems(() => { if (++finished === 2) {
-    try{
-        this.emitInfo();
-    }catch(e){
-        console.error('emitinfo error:', e);
-    }
-    try{
-        this.land(this.orb);
-    }catch(e){
-        console.error('land error:', e);
-    }
-    
-    } } );
-    this.loadInfo( () => { if (++finished === 2) {
-        
-    try{
-        this.emitInfo();
-    }catch(e){
-        console.error('emitinfo 2 error:', e);
-    }
-        
-    try{
-        this.land(this.orb);
-    }catch(e){
-        console.error('land 2 error:', e);
-    }
-    
-    } } );
+    this.loadItems(() => { if (++finished === 2) { this.emitInfo(); this.land(this.orb); } } );
+    this.loadInfo( () => { if (++finished === 2) { this.emitInfo(); this.land(this.orb); } } );
   }
 
   save() {
@@ -678,9 +652,12 @@ class Player extends Controller {
 
   emitInfo() {
     const playerData = this.allFirstInfo;
-
+try{
     Player.addSocketListeners(this.socket);
-
+}catch(e){
+    console.error('addSocketListeners error:', e);
+}
+try{
     this.socket.emit('init', {
       'allInfo': Controller.info,
       'items': Item.info,
@@ -693,6 +670,9 @@ class Player extends Controller {
       }
     });
     this.socket.broadcast.emit('playerJoined', playerData);
+}catch(e){
+    console.error('emit error:', e);
+}
   }
 
   craft() {
