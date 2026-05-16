@@ -170,6 +170,7 @@ class Player extends Controller {
     if (!u_id) {
         this.initGuestInventory();
         this.emitInfo();
+        this.land(this.orb);
         return;
     }
 
@@ -620,7 +621,7 @@ class Player extends Controller {
         }
 
         this.money = row['money']; // cheat line
-        this.orb = Orb.list[row['orb']];
+        if (!this.orb) this.orb = Orb.list[row['orb']];
 
         const ship = row['ship'].split('|');
         this.seed = +ship[0];
@@ -824,7 +825,7 @@ class Player extends Controller {
   static onReconnect(socket, data) {//console.log('connected',socket.id);
     const player = Player.create(socket, data);
 
-    player.land(Orb.list[io.state.players[player.ID]]);
+    player.orb = Orb.list[io.state.players[player.ID]];
   }
 
   static onConnect(socket, data) {//console.log('connected',socket.id);
@@ -846,8 +847,6 @@ class Player extends Controller {
   }
 
   static addSocketListeners(socket) {
-    console.log('Object.keys(Player.list):',Object.keys(Player.list));
-    console.log('socket.id:',socket.id);
     const ID = socket.id, player = Player.list[socket.id], ship = player.body;
 
     socket.on('hit', data => {
